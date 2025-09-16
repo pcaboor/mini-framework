@@ -1,4 +1,4 @@
-import { updateDOM, VDomToReelDom } from "./helpers.js";
+import { updateDOM, VDomToReelDom, createVElement } from "./helpers.js";
 import { NotFoundComponent } from "./component.js";
 
 export class Framework {
@@ -10,13 +10,19 @@ export class Framework {
     this.Refs = {};
     this.Event = [];
     this.lastPath = undefined;
+    this.initBrowserNavigation();
+  }
+
+  initBrowserNavigation() {
+    window.addEventListener("popstate", (event) => {
+      this.renderthisPath(window.location.pathname);
+    });
   }
 
   route(path, component) {
     this.routes[path] = component;
   }
 
-  // Ref management
   setRef(name, value) {
     this.Refs[name] = value;
   }
@@ -25,7 +31,6 @@ export class Framework {
     return this.Refs[name];
   }
 
-  // State management
   setWState(name, value) {
     this.state[name] = value;
   }
@@ -39,59 +44,59 @@ export class Framework {
     return this.state[name];
   }
 
-  // Get component for path
   getComponent(path) {
     const ComponentClass = this.routes[path] || NotFoundComponent;
     return new ComponentClass(this);
   }
 
-  // Handle component lifecycle
   handleComponentLifecycle(path, component) {
     const pathChanged = this.lastPath !== path;
 
-    // Unmount previous component
     if (pathChanged && this.lastPath && this.routes[this.lastPath]) {
       const lastComponent = this.getComponent(this.lastPath);
       lastComponent.UnMounting();
     }
 
-    // Clean up event listeners on path change
     if (pathChanged) {
       this.Event.forEach((fn) => fn());
       this.Event = [];
     }
 
-    // Mount new component
     if (pathChanged) {
       this.lastPath = path;
       component.Mounting();
     }
   }
 
-  // Render current path
   renderthisPath(path) {
     const component = this.getComponent(path);
     const newVTree = component.getVDom();
 
     this.handleComponentLifecycle(path, component);
 
-    // Update DOM
     if (this.oldVTree) {
-      updateDOM(this.App.firstChild, this.oldVTree, newVTree);
+      updateDOM(this.App.firstChild, this.oldVTree, newVTree, this);
     } else {
-      this.App.appendChild(VDomToReelDom(newVTree));
+      this.App.appendChild(VDomToReelDom(newVTree, this));
     }
 
     this.oldVTree = newVTree;
   }
 
   navigateTo(newPath) {
+    if (window.location.pathname === newPath) {
+      return;
+    }
+
     window.history.pushState({}, "", newPath);
-    console.log("navigate to", newPath);
     this.renderthisPath(newPath);
   }
 
   start() {
     this.renderthisPath(window.location.pathname);
+  }
+
+  createVElement(tag, props = {}, children = []) {
+    return createVElement(tag, props, children);
   }
 }

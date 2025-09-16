@@ -1,61 +1,102 @@
-# Build Your Own Framework
+# 🚀 Mini-Framework JavaScript - Guide Complet
 
-Now that you have already used a framework of your choice, you must now implement some features on a framework of your own.  
-That's right — you are going to **create a framework**.
+## 📋 Contexte du Projet
 
----
-
-## ⚡ Framework vs Library
-
-Be aware that a **framework** is different from a **library**:
-
-- With a **library**, **you** are in control (you call its methods).  
-- With a **framework**, the control is inverted: **the framework calls you**.
+**Objectif :** Créer votre propre framework JavaScript moderne, sans dépendances externes.
 
 ---
 
-## 🎯 Objectives
+## ⚡ Framework vs Bibliothèque
 
-Your framework should implement:
+**Bibliothèque** : Vous contrôlez l'exécution (vous appelez ses méthodes)
 
-- ✅ Abstracting the DOM  
-- ✅ Routing System  
-- ✅ State Management  
-- ✅ Event Handling  
+```js
+// Exemple avec jQuery (bibliothèque)
+$("#button").click(() => { ... });
+```
 
-You will also need to make a **TodoMVC project** using your framework.
+**Framework** : Il contrôle votre code (inversion de contrôle)
 
----
-
-## 📘 Instructions
-
-1. You must create **documentation** for your framework, so that users (auditors) are able to understand and know how to use it without confusion.  
-2. Your framework will be tested by using it, just like you previously used one in the social network project.  
-3. Provide a **folder structure** that allows the tester to run the app from the root.  
-4. The tester should be able to implement **simple code** to test the required features.  
-5. You are **not allowed to use** existing frameworks/libraries like React, Angular, Vue, etc.
-
----
-
-## 📝 Documentation
-
-Your documentation should explain:
-
-- How the framework works  
-- How to use it in practice  
-
-A new user must be able to:  
-
-- Create an element  
-- Create an event  
-- Nest elements  
-- Add attributes to an element  
-
-And also understand **why things work the way they work**.
+```js
+// Exemple avec votre framework
+class MonComposant extends Component {
+  getVDom() {
+    /* Le framework appelle cette méthode */
+  }
+}
+```
 
 ---
 
-## 🧩 Features to Implement
+## 🎯 Fonctionnalités Obligatoires
+
+Votre framework doit implémenter :
+
+- ✅ **Abstraction du DOM** (Virtual DOM)
+- ✅ **Système de routage** (navigation entre pages)
+- ✅ **Gestion d'état** (state management)
+- ✅ **Gestion d'événements** (différent de addEventListener)
+
+**Projet requis :** Application TodoMVC complète
+
+---
+
+## � Structure de Fichiers Fournie
+
+```
+mini-framework/
+├── framework/              # 🏗️ Le framework
+│   ├── framwork.js         #   Classe principale
+│   ├── component.js        #   Système de composants
+│   └── helpers.js          #   Virtual DOM
+├── todoMVC/               # ✅ TodoMVC complet
+│   ├── index.html
+│   ├── app.js
+│   └── style.css
+├── index.html             # 🏠 Demo moderne
+├── main.js                # 🎮 Exemples d'usage
+├── styles.css             # 🎨 Design moderne
+├── README.md              # 📚 Documentation
+└── INSTRUCTION.md         # 📖 Ce guide
+```
+
+---
+
+## 🚀 Démarrage Rapide
+
+### 1. Tester le Framework
+
+```bash
+# Lancer un serveur local
+python3 -m http.server 8000
+
+# Ouvrir dans le navigateur
+# Demo principale : http://localhost:8000
+# TodoMVC : http://localhost:8000/todoMVC/
+```
+
+### 2. Votre Premier Composant
+
+```js
+import { Framework } from "./framework/framwork.js";
+import { Component } from "./framework/component.js";
+
+class MonComposant extends Component {
+  getVDom() {
+    return this.framework.createVElement("div", {}, [
+      this.framework.createVElement("h1", {}, ["Hello World!"]),
+    ]);
+  }
+}
+
+const app = new Framework();
+app.route("/", MonComposant);
+app.start();
+```
+
+---
+
+## 🧩 Fonctionnalités Implémentées
 
 ### 1. Abstracting the DOM
 
