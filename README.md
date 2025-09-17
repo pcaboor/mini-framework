@@ -85,6 +85,39 @@ Puis visitez `http://localhost:8000`
 
 Pour vérifier rapidement : ouvrir `http://localhost:8000`, aller sur la route Todo, ajouter quelques todos, tester cocher/décocher, filtrer et cliquer sur Clear Completed. Il ne doit pas y avoir d'erreurs dans la console DevTools.
 
+## ✅ Audit — Q&A
+
+- **VDOM :** implémentation dans `framework/helpers.js` — fonctions clés : `createVElement`, `VDomToReelDom`, `diff`, `updateDOM`. Vérifier : modification d'un composant provoque un patch minimal sur le DOM (inspecter éléments et classes en DevTools).
+
+- **Routage :** implémentation dans `framework/framwork.js` — fonctions : `getCurrentPath()`, `navigateTo(path)` et écouteur `hashchange`. Vérifier : changement d'URL via `app.navigateTo('/path')` met à jour le hash et le composant affiché ; rafraîchir la page ne doit pas renvoyer 404 sur un serveur statique.
+
+- **Gestion d'état :** implémentation dans `framework/framwork.js` — API : `getState(name)`, `setState(name, value)`, `setWState(name, value)`. Vérifier : `setState` déclenche re-render, `setWState` ne déclenche pas de re-render.
+
+- **Événements et nettoyage :** modifications appliquées dans `framework/helpers.js` — mécanisme : `listenerMap` (WeakMap), utilitaires `addListener()` / `removeListener()` et intégration dans `updateProps`/`setProp`. Vérifier : naviguer entre pages et observer absence de doublons d'écouteurs (console, profiler, ou instrumentation simple `console.count()` dans un handler).
+
+- **Persistance TodoMVC :** l'exemple utilise `localStorage` avec la clé `miniframework_todos_v1` (voir `todoMVC/` ou la logique dans `main.js` / `TodoDemoComponent`). Vérifier : ajouter des todos, recharger la page, les todos persistent.
+
+- **Tests manuels rapides :**
+  - Démarrer le serveur :
+    ```bash
+    python3 -m http.server 8000
+    ```
+  - Vérifier l'écoute : `ss -ltnp 'sport = :8000'` ou `lsof -i :8000`
+  - Vérifier la réponse HTTP : `curl -I http://localhost:8000/`
+  - Ouvrir `http://localhost:8000/` puis naviguer vers la route Todo et exécuter la checklist TodoMVC (ajout, édition, bascule, filtres, Clear completed).
+
+- **Emplacement des éléments à relire pour l'audit :**
+  - VDOM & events : `framework/helpers.js`
+  - Framework (routing/state/ref) : `framework/framwork.js`
+  - Composants de base : `framework/component.js`
+  - Démo Todo et persistance : `todoMVC/` et `main.js`
+
+- **Commit attendu pour la correction événements :** si nécessaire, rechercher le commit `fix(events): dedupe listeners and deterministic cleanup` sur la branche `component` ou vérifier le fichier `framework/helpers.js` dans l'arborescence de travail.
+
+Si vous voulez, je peux :
+- committer/pusher la modification `README.md` (message proposé : `docs(audit): add Q&A and verification steps`),
+- ou lancer les vérifications manuelles et rapporter les observations.
+
 ### 3. Projet TodoMVC
 
 Pour voir l'exemple TodoMVC conforme aux spécifications officielles :
