@@ -129,6 +129,25 @@ class HomeComponent extends Component {
               "Système d'événements personnalisé et optimisé",
             ]),
           ]),
+          this.framework.createVElement("div", { class: "feature-card" }, [
+            this.framework.createVElement("i", {
+              class: "feature-icon fas fa-shield-alt",
+            }),
+            this.framework.createVElement("h3", {}, ["Sécurité"]),
+            this.framework.createVElement("p", {}, [
+              "Principes simples pour garder les composants prévisibles",
+            ]),
+          ]),
+
+          this.framework.createVElement("div", { class: "feature-card" }, [
+            this.framework.createVElement("i", {
+              class: "feature-icon fas fa-smile",
+            }),
+            this.framework.createVElement("h3", {}, ["UX & Styles"]),
+            this.framework.createVElement("p", {}, [
+              "Composants stylés et cohérents pour une meilleure expérience",
+            ]),
+          ]),
         ]),
       ]),
     ]);
