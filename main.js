@@ -554,6 +554,11 @@ class TodoDemoComponent extends Component {
     const newTodo = this.framework.getState("newTodo");
     if (!newTodo.trim()) return;
 
+    // instrumentation: count adds during audit (helps detect duplicate handlers)
+    try {
+      console.count("todo.add");
+    } catch (e) {}
+
     const todos = this.framework.getState("todos") || [];
     const newId = Math.max(0, ...todos.map((t) => t.id)) + 1;
 
@@ -726,6 +731,9 @@ class TodoDemoComponent extends Component {
                       type: "checkbox",
                       checked: todo.completed,
                       onChange: () => {
+                        try {
+                          console.count("todo.toggle");
+                        } catch (e) {}
                         this.updateTodos(
                           todos.map((t) =>
                             t.id === todo.id
@@ -750,6 +758,9 @@ class TodoDemoComponent extends Component {
                   {
                     class: "delete-btn",
                     onClick: () => {
+                      try {
+                        console.count("todo.delete");
+                      } catch (e) {}
                       this.updateTodos(todos.filter((t) => t.id !== todo.id));
                     },
                   },
