@@ -444,11 +444,26 @@ class FormComponent extends Component {
 class TodoDemoComponent extends Component {
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
-      this.framework.setWState("todos", [
-        { id: 1, text: "🎯 Apprendre le framework", completed: false },
-        { id: 2, text: "🚀 Créer une application", completed: true },
-        { id: 3, text: "✨ Ajouter des animations", completed: false },
-      ]);
+      // Load todos from localStorage if available, else use defaults
+      const raw = localStorage.getItem("miniframework_todos_v1");
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          this.framework.setWState("todos", parsed);
+        } catch (e) {
+          this.framework.setWState("todos", [
+            { id: 1, text: "🎯 Apprendre le framework", completed: false },
+            { id: 2, text: "🚀 Créer une application", completed: true },
+            { id: 3, text: "✨ Ajouter des animations", completed: false },
+          ]);
+        }
+      } else {
+        this.framework.setWState("todos", [
+          { id: 1, text: "🎯 Apprendre le framework", completed: false },
+          { id: 2, text: "🚀 Créer une application", completed: true },
+          { id: 3, text: "✨ Ajouter des animations", completed: false },
+        ]);
+      }
     }
     if (this.framework.getState("newTodo") === undefined) {
       this.framework.setWState("newTodo", "");
@@ -458,6 +473,21 @@ class TodoDemoComponent extends Component {
     }
   }
 
+  // persistence helpers
+  saveTodos() {
+    try {
+      const todos = this.framework.getState("todos") || [];
+      localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  updateTodos(newTodos) {
+    this.framework.setState("todos", newTodos);
+    this.saveTodos();
+  }
+
   addTodo() {
     const newTodo = this.framework.getState("newTodo");
     if (!newTodo.trim()) return;
@@ -465,7 +495,7 @@ class TodoDemoComponent extends Component {
     const todos = this.framework.getState("todos") || [];
     const newId = Math.max(0, ...todos.map((t) => t.id)) + 1;
 
-    this.framework.setState("todos", [
+    this.updateTodos([
       ...todos,
       { id: newId, text: newTodo.trim(), completed: false },
     ]);
@@ -634,8 +664,7 @@ class TodoDemoComponent extends Component {
                       type: "checkbox",
                       checked: todo.completed,
                       onChange: () => {
-                        this.framework.setState(
-                          "todos",
+                        this.updateTodos(
                           todos.map((t) =>
                             t.id === todo.id
                               ? { ...t, completed: !t.completed }
@@ -659,10 +688,7 @@ class TodoDemoComponent extends Component {
                   {
                     class: "delete-btn",
                     onClick: () => {
-                      this.framework.setState(
-                        "todos",
-                        todos.filter((t) => t.id !== todo.id)
-                      );
+                      this.updateTodos(todos.filter((t) => t.id !== todo.id));
                     },
                   },
                   [

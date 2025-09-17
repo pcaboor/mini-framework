@@ -65,6 +65,11 @@ python -m http.server 8000
 npx serve .
 ```
 
+Note:
+
+- La version `todoMVC` utilise `localStorage` (clé `miniframework_todos_v1`) pour persister les todos entre rechargements.
+- Le `Dashboard` de la démo principale lit les todos du state global et affiche des statistiques calculées (total, actifs, complétés, %).
+
 Puis visitez `http://localhost:8000`
 
 ### 3. Projet TodoMVC

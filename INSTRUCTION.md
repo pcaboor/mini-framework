@@ -94,6 +94,11 @@ app.route("/", MonComposant);
 app.start();
 ```
 
+Notes importantes :
+
+- L'exemple `todoMVC` utilise `localStorage` avec la clé `miniframework_todos_v1` pour sauvegarder automatiquement les todos.
+- Le composant `Dashboard` dans la démo principale calcule dynamiquement des statistiques à partir de l'état global `todos` (total, actifs, complétés, pourcentage de complétion).
+
 ---
 
 ## 🧩 Fonctionnalités Implémentées
@@ -177,8 +182,7 @@ Allow multiple pages to access and update the same state
 
 4. Event Handling
 
-Implement a custom way to handle user events (scroll, click, keybindings, etc.).
-⚠️ This must be different from addEventListener().
+Attach events declaratively using `onX` props (e.g. `onClick`, `onInput`). Internally the framework uses `addEventListener`/`removeEventListener` to attach handlers but keeps the declarative API so you don't need to manage listeners yourself.
 
 ✅ TodoMVC Project
 

@@ -30,6 +30,15 @@ function updateProps(element, oldProps = {}, newProps = {}, framework = null) {
 
   for (const prop in allProps) {
     if (oldProps[prop] !== newProps[prop]) {
+      // If updating an event handler, remove the old one first
+      if (prop.startsWith("on") && typeof oldProps[prop] === "function") {
+        const evt = prop.slice(2).toLowerCase();
+        try {
+          element.removeEventListener(evt, oldProps[prop]);
+        } catch (e) {
+          // ignore
+        }
+      }
       setProp(element, prop, newProps[prop], framework);
     }
   }
@@ -58,10 +67,35 @@ function updateChildren(
 }
 
 function setProp(element, prop, value, framework = null) {
+  if (prop === "ref" && framework) {
+    framework.setRef(value, element);
+    return;
+  }
+
   if (prop.startsWith("on") && typeof value === "function") {
-    element[prop.toLowerCase()] = value;
+    const evt = prop.slice(2).toLowerCase();
+    element.addEventListener(evt, value);
+    if (framework) {
+      framework.Event.push(() => {
+        try {
+          element.removeEventListener(evt, value);
+        } catch (e) {
+          // ignore
+        }
+      });
+    }
+  } else if (prop === "value") {
+    element.value = value == null ? "" : value;
+  } else if (prop === "checked") {
+    element.checked = !!value;
+  } else if (prop === "class") {
+    element.className = value || "";
   } else {
-    element.setAttribute(prop, value || "");
+    if (value === false || value === null || value === undefined) {
+      element.removeAttribute(prop);
+    } else {
+      element.setAttribute(prop, String(value));
+    }
   }
 }
 
@@ -92,19 +126,8 @@ export function VDomToReelDom(vnode, framework = null) {
 }
 
 function handleProp(element, prop, value, framework = null) {
-  if (prop === "ref" && framework) {
-    framework.setRef(value, element);
-  } else if (prop.startsWith("on") && typeof value === "function") {
-    element[prop.toLowerCase()] = value;
-
-    if (framework) {
-      framework.Event.push(() => {
-        element[prop.toLowerCase()] = null;
-      });
-    }
-  } else {
-    element.setAttribute(prop, value);
-  }
+  // Delegate to setProp which handles events, refs and properties
+  setProp(element, prop, value, framework);
 }
 
 export function updateDOM(parent, oldVTree, newVTree, framework = null) {

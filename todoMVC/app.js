@@ -5,7 +5,18 @@ class TodoApp extends Component {
   Mounting() {
     // Initialize state if not exists
     if (this.framework.getState("todos") === undefined) {
-      this.framework.setWState("todos", []);
+      // Try load from localStorage
+      const raw = localStorage.getItem("miniframework_todos_v1");
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          this.framework.setWState("todos", parsed);
+        } catch (e) {
+          this.framework.setWState("todos", []);
+        }
+      } else {
+        this.framework.setWState("todos", []);
+      }
     }
     if (this.framework.getState("newTodo") === undefined) {
       this.framework.setWState("newTodo", "");
@@ -22,6 +33,20 @@ class TodoApp extends Component {
   }
 
   // Helper methods
+  saveTodos() {
+    try {
+      const todos = this.framework.getState("todos") || [];
+      localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
+
+  updateTodos(newTodos) {
+    this.framework.setState("todos", newTodos);
+    this.saveTodos();
+  }
+
   addTodo(text) {
     if (!text.trim()) return;
 
@@ -32,22 +57,18 @@ class TodoApp extends Component {
       completed: false,
     };
 
-    this.framework.setState("todos", [...todos, newTodo]);
+    this.updateTodos([...todos, newTodo]);
     this.framework.setState("newTodo", "");
   }
 
   deleteTodo(id) {
     const todos = this.framework.getState("todos") || [];
-    this.framework.setState(
-      "todos",
-      todos.filter((todo) => todo.id !== id)
-    );
+    this.updateTodos(todos.filter((todo) => todo.id !== id));
   }
 
   toggleTodo(id) {
     const todos = this.framework.getState("todos") || [];
-    this.framework.setState(
-      "todos",
+    this.updateTodos(
       todos.map((todo) =>
         todo.id === id ? { ...todo, completed: !todo.completed } : todo
       )
@@ -58,8 +79,7 @@ class TodoApp extends Component {
     const todos = this.framework.getState("todos") || [];
     const allCompleted = todos.every((todo) => todo.completed);
 
-    this.framework.setState(
-      "todos",
+    this.updateTodos(
       todos.map((todo) => ({ ...todo, completed: !allCompleted }))
     );
   }
@@ -77,8 +97,7 @@ class TodoApp extends Component {
       this.deleteTodo(editingId);
     } else {
       const todos = this.framework.getState("todos") || [];
-      this.framework.setState(
-        "todos",
+      this.updateTodos(
         todos.map((todo) =>
           todo.id === editingId ? { ...todo, text: editingText.trim() } : todo
         )
@@ -96,10 +115,7 @@ class TodoApp extends Component {
 
   clearCompleted() {
     const todos = this.framework.getState("todos") || [];
-    this.framework.setState(
-      "todos",
-      todos.filter((todo) => !todo.completed)
-    );
+    this.updateTodos(todos.filter((todo) => !todo.completed));
   }
 
   getFilteredTodos() {
