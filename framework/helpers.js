@@ -25,19 +25,68 @@ export function diff(oldVTree, newVTree) {
   };
 }
 
+// Listener registry to avoid duplicate listeners and enable deterministic cleanup
+const listenerMap = new WeakMap();
+
+function addListener(element, evt, handler, framework = null) {
+  let map = listenerMap.get(element);
+  if (!map) {
+    map = new Map();
+    listenerMap.set(element, map);
+  }
+
+  let set = map.get(evt);
+  if (!set) {
+    set = new Set();
+    map.set(evt, set);
+  }
+
+  if (set.has(handler)) return;
+
+  element.addEventListener(evt, handler);
+  set.add(handler);
+
+  // Register a single cleanup callback per element on the framework.Event stack
+  if (framework && !map.__cleanupRegistered) {
+    map.__cleanupRegistered = true;
+    framework.Event.push(() => {
+      const m = listenerMap.get(element);
+      if (!m) return;
+      for (const [e, handlers] of m.entries()) {
+        for (const h of handlers) {
+          try {
+            element.removeEventListener(e, h);
+          } catch (err) {}
+        }
+      }
+      listenerMap.delete(element);
+    });
+  }
+}
+
+function removeListener(element, evt, handler) {
+  const map = listenerMap.get(element);
+  if (!map) return;
+  const set = map.get(evt);
+  if (!set) return;
+  if (set.has(handler)) {
+    try {
+      element.removeEventListener(evt, handler);
+    } catch (err) {}
+    set.delete(handler);
+  }
+  if (set.size === 0) map.delete(evt);
+  if (map.size === 0) listenerMap.delete(element);
+}
+
 function updateProps(element, oldProps = {}, newProps = {}, framework = null) {
   const allProps = { ...oldProps, ...newProps };
 
   for (const prop in allProps) {
     if (oldProps[prop] !== newProps[prop]) {
-      // If updating an event handler, remove the old one first
       if (prop.startsWith("on") && typeof oldProps[prop] === "function") {
         const evt = prop.slice(2).toLowerCase();
-        try {
-          element.removeEventListener(evt, oldProps[prop]);
-        } catch (e) {
-          // ignore
-        }
+        removeListener(element, evt, oldProps[prop]);
       }
       setProp(element, prop, newProps[prop], framework);
     }
@@ -74,16 +123,7 @@ function setProp(element, prop, value, framework = null) {
 
   if (prop.startsWith("on") && typeof value === "function") {
     const evt = prop.slice(2).toLowerCase();
-    element.addEventListener(evt, value);
-    if (framework) {
-      framework.Event.push(() => {
-        try {
-          element.removeEventListener(evt, value);
-        } catch (e) {
-          // ignore
-        }
-      });
-    }
+    addListener(element, evt, value, framework);
   } else if (prop === "value") {
     element.value = value == null ? "" : value;
   } else if (prop === "checked") {
