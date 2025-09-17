@@ -59,7 +59,7 @@ Ouvrez `index.html` dans votre navigateur pour voir la démonstration, ou lancez
 
 ```bash
 # Avec Python
-python -m http.server 8000
+python3 -m http.server 8000
 
 # Avec Node.js (si vous avez npx)
 npx serve .
