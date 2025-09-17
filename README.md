@@ -115,6 +115,7 @@ Pour vérifier rapidement : ouvrir `http://localhost:8000`, aller sur la route T
 - **Commit attendu pour la correction événements :** si nécessaire, rechercher le commit `fix(events): dedupe listeners and deterministic cleanup` sur la branche `component` ou vérifier le fichier `framework/helpers.js` dans l'arborescence de travail.
 
 Si vous voulez, je peux :
+
 - committer/pusher la modification `README.md` (message proposé : `docs(audit): add Q&A and verification steps`),
 - ou lancer les vérifications manuelles et rapporter les observations.
 
