@@ -72,6 +72,19 @@ Note:
 
 Puis visitez `http://localhost:8000`
 
+## 🛡️ Notes pour l'audit
+
+- **Routage** : le framework utilise le mode _hash routing_ (via `location.hash`). Cela évite les 404 lors du rafraîchissement sur un serveur statique simple.
+- **Vérifications TodoMVC** : pour valider la conformité, vérifiez que l'exemple TodoMVC (dans `todoMVC/` ou `main.js`) contient :
+  - un champ d'ajout de todo (input) et un bouton/contrôle pour ajouter une tâche;
+  - chaque tâche rendue avec la classe `todo-item` (ou équivalent clairement identifiable);
+  - un élément `footer` (ou tout élément avec la classe `footer`) visible lorsque la liste contient au moins une tâche;
+  - contrôles de filtrage (All / Active / Completed) qui filtrent l'affichage et mettent éventuellement à jour l'URL/hash;
+  - un bouton `Clear completed` qui supprime uniquement les tâches complétées;
+  - persistance via `localStorage` (clé utilisée : `miniframework_todos_v1`).
+
+Pour vérifier rapidement : ouvrir `http://localhost:8000`, aller sur la route Todo, ajouter quelques todos, tester cocher/décocher, filtrer et cliquer sur Clear Completed. Il ne doit pas y avoir d'erreurs dans la console DevTools.
+
 ### 3. Projet TodoMVC
 
 Pour voir l'exemple TodoMVC conforme aux spécifications officielles :
