@@ -304,6 +304,16 @@ class FormComponent extends Component {
     }, 2000);
   }
 
+  toggleSkill(skill) {
+    const formData = this.framework.getState("formData") || {};
+    const skills = formData.skills || [];
+    const has = skills.includes(skill);
+    const newSkills = has
+      ? skills.filter((s) => s !== skill)
+      : [...skills, skill];
+    this.framework.setState("formData", { ...formData, skills: newSkills });
+  }
+
   getVDom() {
     const formData = this.framework.getState("formData") || {};
     const status = this.framework.getState("submissionStatus");
@@ -382,6 +392,39 @@ class FormComponent extends Component {
                   style: "resize: vertical; min-height: 100px;",
                   onInput: (e) => this.updateField("message", e.target.value),
                 }),
+              ]
+            ),
+
+            // Skills checkboxes
+            this.framework.createVElement(
+              "div",
+              { style: "margin-bottom: 20px;" },
+              [
+                this.framework.createVElement(
+                  "label",
+                  {
+                    style: "display:block; margin-bottom:8px; font-weight:500;",
+                  },
+                  ["Compétences :"]
+                ),
+                ...["JavaScript", "HTML", "CSS", "Node", "TypeScript"].map(
+                  (skill) =>
+                    this.framework.createVElement(
+                      "label",
+                      {
+                        style:
+                          "display:flex; gap:8px; align-items:center; margin:6px 0;",
+                      },
+                      [
+                        this.framework.createVElement("input", {
+                          type: "checkbox",
+                          checked: (formData.skills || []).includes(skill),
+                          onChange: () => this.toggleSkill(skill),
+                        }),
+                        skill,
+                      ]
+                    )
+                ),
               ]
             ),
 

@@ -14,9 +14,19 @@ export class Framework {
   }
 
   initBrowserNavigation() {
-    window.addEventListener("popstate", (event) => {
-      this.renderthisPath(window.location.pathname);
+    // Use hash routing to avoid server 404s on refresh for simple static servers
+    window.addEventListener("hashchange", () => {
+      this.renderthisPath(this.getCurrentPath());
     });
+  }
+
+  getCurrentPath() {
+    // normalize: "#/foo" -> "/foo"; empty hash -> "/"
+    const hash = window.location.hash || "";
+    if (!hash) return "/";
+    // remove leading '#' and ensure leading '/'
+    const raw = hash.slice(1);
+    return raw.startsWith("/") ? raw : `/${raw}`;
   }
 
   route(path, component) {
@@ -84,16 +94,14 @@ export class Framework {
   }
 
   navigateTo(newPath) {
-    if (window.location.pathname === newPath) {
-      return;
-    }
-
-    window.history.pushState({}, "", newPath);
-    this.renderthisPath(newPath);
+    const target = newPath.startsWith("#") ? newPath : `#${newPath}`;
+    if ((window.location.hash || "") === target) return;
+    // change the hash which will trigger hashchange and render
+    window.location.hash = target.slice(1);
   }
 
   start() {
-    this.renderthisPath(window.location.pathname);
+    this.renderthisPath(this.getCurrentPath());
   }
 
   createVElement(tag, props = {}, children = []) {
