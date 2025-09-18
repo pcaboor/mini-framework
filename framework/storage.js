@@ -1,4 +1,3 @@
-// Small storage wrapper: tries localStorage, falls back to in-memory object
 const memoryStore = Object.create(null);
 
 export function setLocal(key, value) {
@@ -7,9 +6,7 @@ export function setLocal(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
       return;
     }
-  } catch (e) {
-    // fall through to memory
-  }
+  } catch (e) {}
   memoryStore[key] = JSON.stringify(value);
 }
 
@@ -19,9 +16,7 @@ export function getLocal(key) {
       const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : null;
     }
-  } catch (e) {
-    // fall through to memory
-  }
+  } catch (e) {}
   const raw = memoryStore[key];
   return raw ? JSON.parse(raw) : null;
 }

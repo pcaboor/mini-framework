@@ -1,4 +1,3 @@
-/* Modern Mini-Framework Design */
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -21,7 +20,39 @@
   --animation-fast: 0.2s ease;
   --animation-medium: 0.3s ease;
   --animation-slow: 0.5s ease;
+  --page-bg-gradient: linear-gradient(
+    135deg,
+    #667eea 0%,
+    #764ba2 50%,
+    #f093fb 100%
+  );
+  --nav-bg: rgba(255, 255, 255, 0.1);
+  --nav-border: rgba(255, 255, 255, 0.2);
+  --nav-item-bg: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
+  --nav-item-hover-bg: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2)
+  );
+  --nav-icon-hover-color: #ffd700;
+  --nav-home-color: #4caf50;
+  --nav-calculator-color: #ff9800;
+  --nav-edit-color: #2196f3;
+  --nav-tasks-color: #e91e63;
+  --shine-rgba: rgba(255, 255, 255, 0.2);
+  --glass-border-weak: rgba(255, 255, 255, 0.2);
+  --focus-border: #667eea;
+  --focus-ring-rgba: rgba(102, 126, 234, 0.1);
+  --feature-icon-color: #111111;
+  --delete-btn-hover-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+  --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
+/* Light theme intentionally removed so default purple gradient remains */
 
 * {
   margin: 0;
@@ -40,7 +71,7 @@ body {
     Ubuntu,
     Cantarell,
     sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background: var(--page-bg-gradient);
   background-size: 400% 400%;
   animation: gradientShift 15s ease infinite;
   min-height: 100vh;
@@ -60,14 +91,12 @@ body {
   }
 }
 
-/* Container Principal */
 #app {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-/* Glass Morphism Cards */
 .glass-card,
 .content-card {
   background: var(--glass-bg);
@@ -87,14 +116,13 @@ body {
   box-shadow: var(--shadow-heavy);
 }
 
-/* Navigation Moderne */
 .nav {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nav-bg);
   backdrop-filter: blur(20px);
   border-radius: var(--border-radius);
   padding: 1rem 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--nav-border);
   display: flex;
   justify-content: center;
   gap: 1rem;
@@ -103,11 +131,7 @@ body {
 
 .nav-item,
 .nav-link {
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.1)
-  );
+  background: var(--nav-item-bg);
   color: var(--text-light);
   text-decoration: none;
   padding: 0.75rem 1.5rem;
@@ -148,15 +172,10 @@ body {
 .nav-item:hover,
 .nav-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.3),
-    rgba(255, 255, 255, 0.2)
-  );
+  box-shadow: var(--shadow-medium);
+  background: var(--nav-item-hover-bg);
 }
 
-/* Icônes Navigation */
 .nav-item i {
   font-size: 1.2rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
@@ -170,7 +189,7 @@ body {
 }
 
 .nav-item:hover i {
-  color: #ffd700; /* Or brillant au hover */
+  color: var(--nav-icon-hover-color);
   transform: scale(1.1);
   transition: all var(--animation-fast);
 }
@@ -179,32 +198,30 @@ body {
    Using more specific selectors so the rules win without `!important`. */
 .nav-item i.fa-home,
 .nav-link i.fa-home {
-  color: #4caf50;
+  color: var(--nav-home-color);
 }
 .nav-item i.fa-calculator,
 .nav-link i.fa-calculator {
-  color: #ff9800;
+  color: var(--nav-calculator-color);
 }
 .nav-item i.fa-edit,
 .nav-link i.fa-edit {
-  color: #2196f3;
+  color: var(--nav-edit-color);
 }
 .nav-item i.fa-tasks,
 .nav-link i.fa-tasks {
-  color: #e91e63;
+  color: var(--nav-tasks-color);
 }
 
-/* Titres Stylés */
 h1 {
   font-size: 3rem;
   font-weight: 800;
-  color: #ffffff;
+  color: var(--text-light);
   text-align: center;
   margin-bottom: 1rem;
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* ✨ Titres avec gradient (sans emojis) */
 h1.gradient-text {
   background: linear-gradient(135deg, #667eea, #764ba2);
   -webkit-background-clip: text;
@@ -212,7 +229,6 @@ h1.gradient-text {
   background-clip: text;
 }
 
-/* Emojis dans les titres */
 h1::before {
   -webkit-text-fill-color: initial;
   color: initial;
@@ -233,7 +249,6 @@ h3 {
   margin-bottom: 0.75rem;
 }
 
-/* Boutons Modernes */
 .button,
 .btn,
 .modern-btn {
@@ -292,7 +307,6 @@ h3 {
   transform: translateY(0);
 }
 
-/* Variantes de boutons */
 .button-success {
   background: var(--success-gradient);
 }
@@ -309,7 +323,6 @@ h3 {
   background: var(--dark-gradient);
 }
 
-/* Inputs Stylés */
 .input,
 .modern-input,
 input[type="text"],
@@ -331,12 +344,11 @@ textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border: 2px solid #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border: 2px solid var(--focus-border);
+  box-shadow: 0 0 0 3px var(--focus-ring-rgba);
   transform: translateY(-1px);
 }
 
-/* Compteur Stylé */
 .counter,
 .counter-display {
   font-size: 4rem;
@@ -375,7 +387,7 @@ textarea:focus {
   border-radius: var(--border-radius);
   padding: 2rem;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--glass-border-weak);
   transition: all var(--animation-medium);
 }
 
@@ -387,7 +399,7 @@ textarea:focus {
 .feature-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
-  color: #111111; /* make icons black */
+  color: var(--feature-icon-color);
   text-shadow: none;
 }
 
@@ -415,7 +427,7 @@ textarea:focus {
 
 /* Keep stat card icons black so they visually match feature icons */
 .stat-card i {
-  color: #111111;
+  color: var(--feature-icon-color);
 }
 
 /* Liste Todo Stylée */
@@ -511,19 +523,19 @@ textarea:focus {
 
 /* Stat color variants */
 .stat-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--stat-primary-gradient);
   color: white;
 }
 .stat-secondary {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--stat-secondary-gradient);
   color: white;
 }
 .stat-revenue {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: var(--stat-revenue-gradient);
   color: white;
 }
 .stat-growth {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: var(--stat-growth-gradient);
   color: white;
 }
 
@@ -562,16 +574,128 @@ textarea:focus {
   display: block;
 }
 
+/* Color the large numeric values to match the site's spectral palette */
+.counter {
+  /* keep the existing gradient look but use theme tokens */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* The counter value element used in main.js is `.counter-display` — ensure it matches */
+.counter-display {
+  font-size: 4rem;
+  font-weight: 900;
+  display: block;
+  text-align: center;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* keep crisp text without text-stroke to avoid aliasing */
+}
+
+/* Per-stat colored numbers: prefer gradient fills, fallback to solid colors */
+.stat-card.stat-primary .stat-number {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card.stat-secondary .stat-number {
+  background: var(--secondary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card.stat-revenue .stat-number {
+  background: var(--success-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-card.stat-growth .stat-number {
+  background: var(--warning-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Solid color fallback for clients that don't support background-clip text */
+.stat-card.stat-primary .stat-number,
+.stat-card.stat-primary .stat-number * {
+  color: #667eea;
+}
+.stat-card.stat-secondary .stat-number,
+.stat-card.stat-secondary .stat-number * {
+  color: #f093fb;
+}
+.stat-card.stat-revenue .stat-number,
+.stat-card.stat-revenue .stat-number * {
+  color: #4facfe;
+}
+.stat-card.stat-growth .stat-number,
+.stat-card.stat-growth .stat-number * {
+  color: #fa709a;
+}
+
+.stat-number {
+  /* stronger stroke, no blur for clarity */
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-light);
+  display: block;
+}
+
+/* Optional backed variant to place a semi-opaque panel behind numbers for maximum contrast */
+.stat-number--backed {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.82); /* even darker for stronger contrast */
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Backed variant for the main counter - slightly larger padding */
+.counter-display--backed {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.82);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* Colored ambient shadows to give depth matching the spectral palette */
+.stat-card.stat-primary .stat-number {
+  text-shadow: 0 8px 28px rgba(102, 126, 234, 0.18);
+}
+.stat-card.stat-secondary .stat-number {
+  text-shadow: 0 8px 28px rgba(240, 147, 251, 0.18);
+}
+.stat-card.stat-revenue .stat-number {
+  text-shadow: 0 8px 28px rgba(79, 172, 254, 0.18);
+}
+.stat-card.stat-growth .stat-number {
+  text-shadow: 0 8px 28px rgba(250, 112, 154, 0.18);
+}
+
+/* Slight lift for the counter itself when backed */
+.counter-display--backed {
+  transform: translateY(-2px);
+}
+
 .stat-label {
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
   font-weight: 500;
 }
-
-/* Base layouts for components we target responsively */
 .quick-actions {
-  display: flex;
-  flex-wrap: wrap;
   gap: 15px;
   margin-top: 20px;
 }
@@ -648,19 +772,24 @@ textarea:focus {
 }
 
 /* Accessibility: visible focus styles for keyboard users when nav labels are hidden */
-.nav-item:focus,
+/* Only reveal nav labels when the element is focused by keyboard (focus-visible)
+   Prevents showing labels on mouse click which can be noisy on touch/mouse. */
+.nav-item:focus:not(:focus-visible),
+.nav-link:focus:not(:focus-visible) {
+  /* mouse focus: keep subtle visual but do not reveal label */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.05);
+}
+
 .nav-item:focus-visible,
-.nav-link:focus,
 .nav-link:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.35);
   transform: translateY(-2px);
 }
 
-/* When a nav item receives keyboard focus, reveal its label for clarity */
-.nav-item:focus .nav-label,
+/* Reveal label only when focus was caused by keyboard navigation */
 .nav-item:focus-visible .nav-label,
-.nav-link:focus .nav-label,
 .nav-link:focus-visible .nav-label {
   display: inline-block;
   position: absolute;
@@ -701,6 +830,126 @@ textarea:focus {
   .quick-actions .modern-btn i {
     margin: 0;
     font-size: 1.15rem;
+  }
+}
+
+/* Dark theme overrides (applied with `data-theme="dark"`) */
+:root[data-theme="dark"] {
+  --page-bg-gradient: linear-gradient(
+    180deg,
+    #06070a 0%,
+    #0b1220 60%,
+    #071428 100%
+  );
+  --glass-bg: rgba(28, 30, 36, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.04);
+  --nav-bg: rgba(24, 26, 32, 0.9);
+  --nav-border: rgba(255, 255, 255, 0.03);
+  --text-primary: #e6eef8;
+  --text-secondary: #9aa9be;
+  --text-light: #f8fafc;
+  --shadow-light: 0 8px 30px rgba(0, 0, 0, 0.6);
+  --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.7);
+  --shadow-medium: 0 12px 35px rgba(0, 0, 0, 0.65);
+}
+:root[data-theme="dark"] {
+  --page-bg-gradient: linear-gradient(180deg, #000000 0%, #000000 100%);
+  --glass-bg: rgba(20, 22, 26, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.03);
+  --nav-bg: rgba(18, 20, 24, 0.92);
+  --nav-border: rgba(255, 255, 255, 0.02);
+  --text-primary: #f5f7fb;
+  --text-secondary: #9aa9be;
+  --text-light: #ffffff;
+  --shadow-light: 0 8px 30px rgba(0, 0, 0, 0.8);
+  --shadow-heavy: 0 20px 60px rgba(0, 0, 0, 0.85);
+  --shadow-medium: 0 12px 35px rgba(0, 0, 0, 0.8);
+}
+
+/* Prevent the fixed theme toggle from overlapping the nav on small screens
+   when it sits in the top-right. Add extra top spacing for the nav at <=600px. */
+@media (max-width: 600px) {
+  .nav {
+    margin-top: 56px; /* leave room for the fixed toggle */
+  }
+}
+
+/* Make icons and logos clearly visible in dark mode */
+:root[data-theme="dark"] .feature-icon,
+:root[data-theme="dark"] .stat-card i,
+:root[data-theme="dark"] .nav .nav-item i,
+:root[data-theme="dark"] .nav .nav-link i,
+:root[data-theme="dark"] i {
+  color: var(--text-light);
+  text-shadow: none;
+}
+
+/* In dark theme, make primary buttons match nav item look (black background, white text) */
+:root[data-theme="dark"] .button,
+:root[data-theme="dark"] .btn,
+:root[data-theme="dark"] .modern-btn {
+  background: var(--nav-item-bg);
+  color: var(--text-light);
+  border: 1px solid var(--nav-border);
+  box-shadow: none;
+}
+:root[data-theme="dark"] .button:hover,
+:root[data-theme="dark"] .btn:hover,
+:root[data-theme="dark"] .modern-btn:hover {
+  background: var(--nav-item-hover-bg);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Reverted nav visibility and stat-number contour changes — restored original look */
+
+/* Keep counter visuals consistent with light: gradient text clipped to foreground */
+:root[data-theme="dark"] .counter-display {
+  display: block;
+  text-align: center;
+  margin: 2rem 0;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Fixed theme toggle button in top-right corner */
+.theme-toggle-fixed {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 9999;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  color: var(--text-light);
+}
+.theme-toggle-fixed i {
+  font-size: 1.05rem;
+}
+.theme-toggle-fixed:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.18);
+}
+
+@media (max-width: 600px) {
+  .theme-toggle-fixed {
+    top: 10px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
   }
 }
 

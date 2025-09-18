@@ -106,6 +106,7 @@ class NavigationComponent extends Component {
           ]),
         ]
       ),
+      // theme toggle removed from nav; a fixed top-right toggle will be created at startup
     ]);
   }
 }
@@ -909,7 +910,6 @@ class DashboardComponent extends Component {
       setLocal("miniframework_stats_v1", initial);
     } catch (e) {}
   }
-
   getVDom() {
     const stats = this.framework.getState("stats") || {};
 
@@ -989,12 +989,7 @@ class DashboardComponent extends Component {
                 this.framework.createVElement("div", { class: "stat-number" }, [
                   `${stats.revenue?.toLocaleString() || "0"}€`,
                 ]),
-                // sparkline area
-                this.framework.createVElement(
-                  "div",
-                  { style: "margin-top:12px;" },
-                  ["(trend removed)"]
-                ),
+                // sparkline removed intentionally
               ]
             ),
 
@@ -1159,6 +1154,48 @@ app.route("/form", FormComponent);
 app.route("/todo", TodoDemoComponent);
 app.route("/dashboard", DashboardComponent);
 
+// Initialize theme from storage or system preference
+try {
+  const stored = getLocal("miniframework_theme_v1");
+  const prefersDark =
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const theme = stored || (prefersDark ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", theme);
+} catch (e) {
+  console.warn("Could not initialize theme", e);
+}
+
 app.start();
 
 window.app = app;
+
+// Create a fixed top-right theme toggle button outside the nav
+(function createFixedThemeToggle() {
+  try {
+    const btn = document.createElement("button");
+    btn.className = "theme-toggle-fixed";
+    btn.setAttribute("aria-label", "Toggle theme");
+    btn.title = "Toggle theme";
+    btn.innerHTML = '<i class="fas fa-adjust" aria-hidden="true"></i>';
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      try {
+        const current =
+          getLocal("miniframework_theme_v1") ||
+          (window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light");
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        setLocal("miniframework_theme_v1", next);
+      } catch (err) {
+        console.warn("Theme toggle failed", err);
+      }
+    });
+    document.body.appendChild(btn);
+  } catch (err) {
+    console.warn("Failed to create theme toggle button", err);
+  }
+})();
