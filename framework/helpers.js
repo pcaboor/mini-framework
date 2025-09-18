@@ -1,3 +1,9 @@
+/**
+ * Compute a patch function to update the real DOM from two VDOM trees.
+ * @param {object|string|null} oldVTree
+ * @param {object|string|null} newVTree
+ * @returns {function(Node, object=): void}
+ */
 export function diff(oldVTree, newVTree) {
   if (!oldVTree) {
     return (parent, framework) =>
@@ -25,11 +31,21 @@ export function diff(oldVTree, newVTree) {
   };
 }
 
-// Listener registry to avoid duplicate listeners and enable deterministic cleanup
+/**
+ * WeakMap<Element, Map<string, Set<Function>>>
+ * Stores listeners per element to prevent duplicate registrations
+ * and to allow deterministic cleanup when components unmount.
+ */
 const listenerMap = new WeakMap();
-// Note: using a WeakMap keyed by DOM elements avoids memory leaks
-// because keys are garbage-collected when elements are removed.
 
+/**
+ * Add an event listener once per element/event/handler triple.
+ * Registers a framework cleanup callback when provided.
+ * @param {Element} element
+ * @param {string} evt
+ * @param {Function} handler
+ * @param {object|null} framework
+ */
 function addListener(element, evt, handler, framework = null) {
   let map = listenerMap.get(element);
   if (!map) {
@@ -48,7 +64,6 @@ function addListener(element, evt, handler, framework = null) {
   element.addEventListener(evt, handler);
   set.add(handler);
 
-  // Register a single cleanup callback per element on the framework.Event stack
   if (framework && !map.__cleanupRegistered) {
     map.__cleanupRegistered = true;
     framework.Event.push(() => {
@@ -81,9 +96,10 @@ function removeListener(element, evt, handler) {
   if (map.size === 0) listenerMap.delete(element);
 }
 
-// Best practice: keep add/remove listener logic centralized so that
-// components don't directly call addEventListener/removeEventListener,
-// avoiding accidental duplicates and making cleanup deterministic.
+/**
+ * Note: keep add/remove listener logic centralized to avoid accidental
+ * duplicate registrations and to make cleanup deterministic.
+ */
 
 function updateProps(element, oldProps = {}, newProps = {}, framework = null) {
   const allProps = { ...oldProps, ...newProps };

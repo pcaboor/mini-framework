@@ -1,7 +1,13 @@
 import { Framework } from "./framework/framework.js";
 import { Component } from "./framework/component.js";
 
+/**
+ * NavigationComponent
+ * Represents the main navigation bar with internal links.
+ * @extends Component
+ */
 class NavigationComponent extends Component {
+  /** @returns {Object} Virtual DOM for the navigation */
   getVDom() {
     return this.framework.createVElement("div", { class: "nav" }, [
       this.framework.createVElement(
@@ -74,7 +80,13 @@ class NavigationComponent extends Component {
   }
 }
 
+/**
+ * HomeComponent
+ * Landing page showcasing the micro-framework features.
+ * @extends Component
+ */
 class HomeComponent extends Component {
+  /** @returns {Object} Virtual DOM for the home page */
   getVDom() {
     return this.framework.createVElement("div", {}, [
       new NavigationComponent(this.framework).getVDom(),
@@ -154,7 +166,13 @@ class HomeComponent extends Component {
   }
 }
 
+/**
+ * CounterComponent
+ * Demo component for simple state management.
+ * @extends Component
+ */
 class CounterComponent extends Component {
+  /** Initialize `counter` state if missing */
   Mounting() {
     if (this.framework.getState("counter") === undefined) {
       this.framework.setWState("counter", 0);
@@ -261,8 +279,13 @@ class CounterComponent extends Component {
   }
 }
 
-// Enhanced Form Component
+/**
+ * FormComponent
+ * Example contact form with local validation and simulated submission.
+ * @extends Component
+ */
 class FormComponent extends Component {
+  /** Initialize form state if missing */
   Mounting() {
     if (this.framework.getState("formData") === undefined) {
       this.framework.setWState("formData", {
@@ -277,6 +300,11 @@ class FormComponent extends Component {
     }
   }
 
+  /**
+   * Update a form field in the central state.
+   * @param {string} field - Field name
+   * @param {any} value - New value
+   */
   updateField(field, value) {
     const formData = this.framework.getState("formData") || {};
     this.framework.setState("formData", {
@@ -285,11 +313,11 @@ class FormComponent extends Component {
     });
   }
 
+  /** Simulate form submission and update status */
   submitForm() {
     const formData = this.framework.getState("formData");
     this.framework.setState("submissionStatus", "loading");
 
-    // Simulation d'envoi
     setTimeout(() => {
       this.framework.setState("submissionStatus", "success");
       setTimeout(() => {
@@ -304,6 +332,7 @@ class FormComponent extends Component {
     }, 2000);
   }
 
+  /** Toggle presence of a skill in the selection */
   toggleSkill(skill) {
     const formData = this.framework.getState("formData") || {};
     const skills = formData.skills || [];
@@ -314,6 +343,7 @@ class FormComponent extends Component {
     this.framework.setState("formData", { ...formData, skills: newSkills });
   }
 
+  /** @returns {Object} Virtual DOM for the form */
   getVDom() {
     const formData = this.framework.getState("formData") || {};
     const status = this.framework.getState("submissionStatus");
@@ -395,7 +425,7 @@ class FormComponent extends Component {
               ]
             ),
 
-            // Skills checkboxes
+            /** Skills selection (checkboxes) */
             this.framework.createVElement(
               "div",
               { style: "margin-bottom: 20px;" },
@@ -502,11 +532,15 @@ class FormComponent extends Component {
   }
 }
 
-// Enhanced Todo Component
+/**
+ * TodoDemoComponent
+ * Simple Todo manager (CRUD) with local persistence.
+ * @extends Component
+ */
 class TodoDemoComponent extends Component {
+  /** Load initial state (todos, newTodo, filter) from localStorage */
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
-      // Load todos from localStorage if available, else use defaults
       const raw = localStorage.getItem("miniframework_todos_v1");
       if (raw) {
         try {
@@ -535,28 +569,29 @@ class TodoDemoComponent extends Component {
     }
   }
 
-  // persistence helpers
+  /** Persist todos list into localStorage */
   saveTodos() {
     try {
       const todos = this.framework.getState("todos") || [];
       localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
     } catch (e) {
-      // ignore
+      /* ignore */
     }
   }
 
+  /**
+   * Update the todos list in state and persist it.
+   * @param {Array} newTodos - New todos list
+   */
   updateTodos(newTodos) {
     this.framework.setState("todos", newTodos);
     this.saveTodos();
   }
 
+  /** Add a new task if the input is not empty */
   addTodo() {
     const newTodo = this.framework.getState("newTodo");
     if (!newTodo.trim()) return;
-
-    // instrumentation: count adds during audit (helps detect duplicate handlers)
-    // instrumentation removed: was used temporarily during audit
-
     const todos = this.framework.getState("todos") || [];
     const newId = Math.max(0, ...todos.map((t) => t.id)) + 1;
 
@@ -567,6 +602,7 @@ class TodoDemoComponent extends Component {
     this.framework.setState("newTodo", "");
   }
 
+  /** Return the todos list filtered according to `filter` state */
   getFilteredTodos() {
     const todos = this.framework.getState("todos") || [];
     const filter = this.framework.getState("filter");
@@ -581,6 +617,7 @@ class TodoDemoComponent extends Component {
     }
   }
 
+  /** @returns {Object} Virtual DOM for the Todo view */
   getVDom() {
     const newTodo = this.framework.getState("newTodo") || "";
     const filter = this.framework.getState("filter");
@@ -594,7 +631,7 @@ class TodoDemoComponent extends Component {
       this.framework.createVElement("div", { class: "content-card" }, [
         this.framework.createVElement("h1", {}, ["📋 Todo Manager Pro"]),
 
-        // Stats
+        /** Statistics area */
         this.framework.createVElement(
           "div",
           {
@@ -650,7 +687,7 @@ class TodoDemoComponent extends Component {
           ]
         ),
 
-        // Add todo
+        /** Add-task area */
         this.framework.createVElement(
           "div",
           {
@@ -683,7 +720,7 @@ class TodoDemoComponent extends Component {
           ]
         ),
 
-        // Filters
+        /** Filter buttons */
         this.framework.createVElement(
           "div",
           {
@@ -707,7 +744,7 @@ class TodoDemoComponent extends Component {
           )
         ),
 
-        // Todo list
+        /** Filtered tasks list */
         this.framework.createVElement(
           "div",
           {},
@@ -753,7 +790,6 @@ class TodoDemoComponent extends Component {
                   {
                     class: "delete-btn",
                     onClick: () => {
-                      // delete handler
                       this.updateTodos(todos.filter((t) => t.id !== todo.id));
                     },
                   },

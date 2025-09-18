@@ -1,11 +1,15 @@
 import { Framework } from "../framework/framework.js";
 import { Component } from "../framework/component.js";
 
+/**
+ * TodoApp
+ * TodoMVC example using the micro-framework.
+ * @extends Component
+ */
 class TodoApp extends Component {
+  /** Load initial state from localStorage and initialize used keys */
   Mounting() {
-    // Initialize state if not exists
     if (this.framework.getState("todos") === undefined) {
-      // Try load from localStorage
       const raw = localStorage.getItem("miniframework_todos_v1");
       if (raw) {
         try {
@@ -22,7 +26,7 @@ class TodoApp extends Component {
       this.framework.setWState("newTodo", "");
     }
     if (this.framework.getState("filter") === undefined) {
-      this.framework.setWState("filter", "all"); // all, active, completed
+      this.framework.setWState("filter", "all");
     }
     if (this.framework.getState("editingId") === undefined) {
       this.framework.setWState("editingId", null);
@@ -32,13 +36,13 @@ class TodoApp extends Component {
     }
   }
 
-  // Helper methods
+  /** Persist todos into localStorage (silent) */
   saveTodos() {
     try {
       const todos = this.framework.getState("todos") || [];
       localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
     } catch (e) {
-      // ignore storage errors
+      /* ignore storage errors */
     }
   }
 
@@ -47,6 +51,7 @@ class TodoApp extends Component {
     this.saveTodos();
   }
 
+  /** Add a todo if the text is not empty */
   addTodo(text) {
     if (!text.trim()) return;
 
@@ -75,6 +80,7 @@ class TodoApp extends Component {
     );
   }
 
+  /** Toggle the 'completed' state for all todos */
   toggleAll() {
     const todos = this.framework.getState("todos") || [];
     const allCompleted = todos.every((todo) => todo.completed);
@@ -89,6 +95,7 @@ class TodoApp extends Component {
     this.framework.setState("editingText", text);
   }
 
+  /** Save current edit or delete the todo if text is empty */
   saveEdit() {
     const editingId = this.framework.getState("editingId");
     const editingText = this.framework.getState("editingText");
@@ -113,6 +120,7 @@ class TodoApp extends Component {
     this.framework.setState("editingText", "");
   }
 
+  /** Remove all todos marked as completed */
   clearCompleted() {
     const todos = this.framework.getState("todos") || [];
     this.updateTodos(todos.filter((todo) => !todo.completed));
@@ -132,6 +140,7 @@ class TodoApp extends Component {
     }
   }
 
+  /** Render a Todo list item (edit mode or display) */
   renderTodoItem(todo) {
     const editingId = this.framework.getState("editingId");
     const editingText = this.framework.getState("editingText");
@@ -194,6 +203,7 @@ class TodoApp extends Component {
     );
   }
 
+  /** Render the main section containing the list and toggle-all */
   renderMain() {
     const todos = this.framework.getState("todos") || [];
     const filteredTodos = this.getFilteredTodos();
@@ -222,6 +232,7 @@ class TodoApp extends Component {
     ]);
   }
 
+  /** Render the footer with counters and filters */
   renderFooter() {
     const todos = this.framework.getState("todos") || [];
     const filter = this.framework.getState("filter");
@@ -296,6 +307,7 @@ class TodoApp extends Component {
     ]);
   }
 
+  /** @returns {Object} Root Virtual DOM for the TodoMVC app */
   getVDom() {
     const newTodo = this.framework.getState("newTodo") || "";
 

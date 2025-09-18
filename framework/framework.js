@@ -1,7 +1,13 @@
 import { updateDOM, VDomToReelDom, createVElement } from "./helpers.js";
 import { NotFoundComponent } from "./component.js";
 
+/**
+ * Core Framework class: routing, state, refs and lifecycle management.
+ */
 export class Framework {
+  /**
+   * @param {Object} state - initial global state
+   */
   constructor(state = {}) {
     this.routes = {};
     this.oldVTree = null;
@@ -13,20 +19,23 @@ export class Framework {
     this.initBrowserNavigation();
   }
 
+  /**
+   * Initialize hash-based navigation (simple static-server friendly).
+   */
   initBrowserNavigation() {
-    // Use hash routing to avoid server 404s on refresh for simple static servers
-    // Hash routing keeps URLs deterministic for static hosting without
-    // extra server configuration. It's simple and reliable for this demo.
     window.addEventListener("hashchange", () => {
       this.renderthisPath(this.getCurrentPath());
     });
   }
 
+  /**
+   * Normalize the current location.hash to an application path.
+   * "#/foo" -> "/foo"; empty hash -> "/"
+   * @returns {string}
+   */
   getCurrentPath() {
-    // normalize: "#/foo" -> "/foo"; empty hash -> "/"
     const hash = window.location.hash || "";
     if (!hash) return "/";
-    // remove leading '#' and ensure leading '/'
     const raw = hash.slice(1);
     return raw.startsWith("/") ? raw : `/${raw}`;
   }
@@ -61,6 +70,10 @@ export class Framework {
     return new ComponentClass(this);
   }
 
+  /**
+   * Handle lifecycle transitions: unmount previous component, run
+   * registered cleanup callbacks and mount new component if path changed.
+   */
   handleComponentLifecycle(path, component) {
     const pathChanged = this.lastPath !== path;
 
@@ -69,7 +82,6 @@ export class Framework {
       lastComponent.UnMounting();
     }
 
-    // Run registered cleanup callbacks (e.g. event listeners)
     if (pathChanged) {
       this.Event.forEach((fn) => fn());
       this.Event = [];
@@ -99,7 +111,6 @@ export class Framework {
   navigateTo(newPath) {
     const target = newPath.startsWith("#") ? newPath : `#${newPath}`;
     if ((window.location.hash || "") === target) return;
-    // change the hash which will trigger hashchange and render
     window.location.hash = target.slice(1);
   }
 
