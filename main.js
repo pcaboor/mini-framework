@@ -944,7 +944,8 @@ class DashboardComponent extends Component {
                     class: "modern-btn",
                     onClick: () => {
                       const newStats = { ...stats };
-                      newStats.visitors += Math.floor(Math.random() * 100);
+                      const vDelta = Math.floor(Math.random() * 100) || 1;
+                      newStats.visitors += vDelta;
                       this.framework.setState("stats", newStats);
                     },
                   },
@@ -961,8 +962,17 @@ class DashboardComponent extends Component {
                     class: "modern-btn",
                     onClick: () => {
                       const newStats = { ...stats };
-                      newStats.sales += Math.floor(Math.random() * 10);
-                      newStats.revenue += Math.floor(Math.random() * 1000);
+                      const saleDelta = Math.floor(Math.random() * 10) || 1;
+                      const revenueDelta = Math.floor(Math.random() * 1000) || 1;
+                      const prevRevenue = newStats.revenue || 0;
+                      newStats.sales += saleDelta;
+                      newStats.revenue += revenueDelta;
+                      newStats.growth =
+                        prevRevenue === 0
+                          ? 0
+                          : Number(
+                              (((newStats.revenue - prevRevenue) / prevRevenue) * 100).toFixed(1)
+                            );
                       this.framework.setState("stats", newStats);
                     },
                   },
