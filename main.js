@@ -3,8 +3,13 @@ import { Component } from "./framework/component.js";
 import { getLocal, setLocal } from "./framework/storage.js";
 
 /**
+import { Framework } from "./framework/framework.js";
+import { Component } from "./framework/component.js";
+import { getLocal, setLocal } from "./framework/storage.js";
+
+/**
  * NavigationComponent
- * Represents the main navigation bar with internal links.
+ * Simple top navigation for demo routes.
  * @extends Component
  */
 class NavigationComponent extends Component {
@@ -115,6 +120,7 @@ class HomeComponent extends Component {
               "Optimized diff and patch for maximum performance",
             ]),
           ]),
+
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-route",
@@ -124,6 +130,7 @@ class HomeComponent extends Component {
               "Smooth navigation with back-button support",
             ]),
           ]),
+
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-database",
@@ -133,6 +140,7 @@ class HomeComponent extends Component {
               "Centralized state with automatic re-render",
             ]),
           ]),
+
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-mouse-pointer",
@@ -142,6 +150,7 @@ class HomeComponent extends Component {
               "Custom, optimized event system",
             ]),
           ]),
+
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-shield-alt",
@@ -190,7 +199,7 @@ class CounterComponent extends Component {
         this.framework.createVElement("h1", {}, ["🔢 Counter Pro"]),
 
         this.framework.createVElement("div", { class: "counter-display" }, [
-          `${counter}`,
+          String(counter),
         ]),
 
         this.framework.createVElement(
@@ -211,6 +220,7 @@ class CounterComponent extends Component {
                 " +1",
               ]
             ),
+
             this.framework.createVElement(
               "button",
               {
@@ -224,6 +234,7 @@ class CounterComponent extends Component {
                 " +10",
               ]
             ),
+
             this.framework.createVElement(
               "button",
               {
@@ -235,6 +246,7 @@ class CounterComponent extends Component {
                 " -1",
               ]
             ),
+
             this.framework.createVElement(
               "button",
               {
@@ -248,6 +260,7 @@ class CounterComponent extends Component {
                 " -10",
               ]
             ),
+
             this.framework.createVElement(
               "button",
               {
@@ -264,9 +277,7 @@ class CounterComponent extends Component {
 
         this.framework.createVElement(
           "div",
-          {
-            style: "margin-top: 30px; text-align: center; font-size: 1.1rem;",
-          },
+          { style: "margin-top: 30px; text-align: center; font-size: 1.1rem;" },
           [
             counter === 0
               ? "🎯 Ready to count!"
@@ -308,10 +319,7 @@ class FormComponent extends Component {
    */
   updateField(field, value) {
     const formData = this.framework.getState("formData") || {};
-    this.framework.setState("formData", {
-      ...formData,
-      [field]: value,
-    });
+    this.framework.setState("formData", { ...formData, [field]: value });
   }
 
   /** Simulate form submission and update status */
@@ -369,13 +377,13 @@ class FormComponent extends Component {
                     style:
                       "display: block; margin-bottom: 8px; font-weight: 500;",
                   },
-                  ["👤 Nom complet"]
+                  ["👤 Full name"]
                 ),
                 this.framework.createVElement("input", {
                   class: "modern-input",
                   type: "text",
                   value: formData.name || "",
-                  placeholder: "Votre nom...",
+                  placeholder: "Your name...",
                   onInput: (e) => this.updateField("name", e.target.value),
                 }),
               ]
@@ -397,7 +405,7 @@ class FormComponent extends Component {
                   class: "modern-input",
                   type: "email",
                   value: formData.email || "",
-                  placeholder: "votre@email.com",
+                  placeholder: "your@email.com",
                   onInput: (e) => this.updateField("email", e.target.value),
                 }),
               ]
@@ -418,7 +426,7 @@ class FormComponent extends Component {
                 this.framework.createVElement("textarea", {
                   class: "modern-input",
                   value: formData.message || "",
-                  placeholder: "Votre message...",
+                  placeholder: "Your message...",
                   rows: "4",
                   style: "resize: vertical; min-height: 100px;",
                   onInput: (e) => this.updateField("message", e.target.value),
@@ -426,7 +434,6 @@ class FormComponent extends Component {
               ]
             ),
 
-            /** Skills selection (checkboxes) */
             this.framework.createVElement(
               "div",
               { style: "margin-bottom: 20px;" },
@@ -535,7 +542,7 @@ class FormComponent extends Component {
  * @extends Component
  */
 class TodoDemoComponent extends Component {
-  /** Load initial state (todos, newTodo, filter) from localStorage */
+  /** Load initial state (todos, newTodo, filter) from storage */
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
       const parsed = getLocal("miniframework_todos_v1");
@@ -543,9 +550,9 @@ class TodoDemoComponent extends Component {
         this.framework.setWState("todos", parsed);
       } else {
         this.framework.setWState("todos", [
-          { id: 1, text: "🎯 Apprendre le framework", completed: false },
-          { id: 2, text: "🚀 Créer une application", completed: true },
-          { id: 3, text: "✨ Ajouter des animations", completed: false },
+          { id: 1, text: "🎯 Learn the framework", completed: false },
+          { id: 2, text: "🚀 Create an app", completed: true },
+          { id: 3, text: "✨ Add animations", completed: false },
         ]);
       }
     }
@@ -557,20 +564,17 @@ class TodoDemoComponent extends Component {
     }
   }
 
-  /** Persist todos list into localStorage */
+  /** Persist todos list into storage */
   saveTodos() {
     try {
       const todos = this.framework.getState("todos") || [];
       setLocal("miniframework_todos_v1", todos);
     } catch (e) {
-      /* ignore */
+      // ignore
     }
   }
 
-  /**
-   * Update the todos list in state and persist it.
-   * @param {Array} newTodos - New todos list
-   */
+  /** Update the todos list in state and persist it. */
   updateTodos(newTodos) {
     this.framework.setState("todos", newTodos);
     this.saveTodos();
@@ -578,7 +582,7 @@ class TodoDemoComponent extends Component {
 
   /** Add a new task if the input is not empty */
   addTodo() {
-    const newTodo = this.framework.getState("newTodo");
+    const newTodo = this.framework.getState("newTodo") || "";
     if (!newTodo.trim()) return;
     const todos = this.framework.getState("todos") || [];
     const newId = Math.max(0, ...todos.map((t) => t.id)) + 1;
@@ -619,7 +623,6 @@ class TodoDemoComponent extends Component {
       this.framework.createVElement("div", { class: "content-card" }, [
         this.framework.createVElement("h1", {}, ["📋 Todo Manager Pro"]),
 
-        /** Statistics area */
         this.framework.createVElement(
           "div",
           {
@@ -637,7 +640,7 @@ class TodoDemoComponent extends Component {
                 this.framework.createVElement(
                   "div",
                   { style: "font-size: 2rem; font-weight: bold;" },
-                  [todos.length.toString()]
+                  [String(todos.length)]
                 ),
                 this.framework.createVElement("div", {}, ["Total"]),
               ]
@@ -652,7 +655,7 @@ class TodoDemoComponent extends Component {
                 this.framework.createVElement(
                   "div",
                   { style: "font-size: 2rem; font-weight: bold;" },
-                  [(todos.length - completedCount).toString()]
+                  [String(todos.length - completedCount)]
                 ),
                 this.framework.createVElement("div", {}, ["Active"]),
               ]
@@ -667,7 +670,7 @@ class TodoDemoComponent extends Component {
                 this.framework.createVElement(
                   "div",
                   { style: "font-size: 2rem; font-weight: bold;" },
-                  [completedCount.toString()]
+                  [String(completedCount)]
                 ),
                 this.framework.createVElement("div", {}, ["Completed"]),
               ]
@@ -675,12 +678,9 @@ class TodoDemoComponent extends Component {
           ]
         ),
 
-        /** Add-task area */
         this.framework.createVElement(
           "div",
-          {
-            style: "display: flex; gap: 15px; margin-bottom: 30px;",
-          },
+          { style: "display: flex; gap: 15px; margin-bottom: 30px;" },
           [
             this.framework.createVElement("input", {
               class: "modern-input",
@@ -696,19 +696,15 @@ class TodoDemoComponent extends Component {
             }),
             this.framework.createVElement(
               "button",
-              {
-                class: "modern-btn",
-                onClick: () => this.addTodo(),
-              },
+              { class: "modern-btn", onClick: () => this.addTodo() },
               [
                 this.framework.createVElement("i", { class: "fas fa-plus" }),
-                " Ajouter",
+                " Add",
               ]
             ),
           ]
         ),
 
-        /** Filter buttons */
         this.framework.createVElement(
           "div",
           {
@@ -732,16 +728,13 @@ class TodoDemoComponent extends Component {
           )
         ),
 
-        /** Filtered tasks list */
         this.framework.createVElement(
           "div",
           {},
           filteredTodos.map((todo) =>
             this.framework.createVElement(
               "div",
-              {
-                class: `todo-item ${todo.completed ? "completed" : ""}`,
-              },
+              { class: `todo-item ${todo.completed ? "completed" : ""}` },
               [
                 this.framework.createVElement(
                   "div",
@@ -753,15 +746,14 @@ class TodoDemoComponent extends Component {
                     this.framework.createVElement("input", {
                       type: "checkbox",
                       checked: todo.completed,
-                      onChange: () => {
+                      onChange: () =>
                         this.updateTodos(
                           todos.map((t) =>
                             t.id === todo.id
                               ? { ...t, completed: !t.completed }
                               : t
                           )
-                        );
-                      },
+                        ),
                       style: "transform: scale(1.2);",
                     }),
                     this.framework.createVElement(
@@ -777,9 +769,8 @@ class TodoDemoComponent extends Component {
                   "button",
                   {
                     class: "delete-btn",
-                    onClick: () => {
-                      this.updateTodos(todos.filter((t) => t.id !== todo.id));
-                    },
+                    onClick: () =>
+                      this.updateTodos(todos.filter((t) => t.id !== todo.id)),
                   },
                   [
                     this.framework.createVElement("i", {
@@ -796,7 +787,11 @@ class TodoDemoComponent extends Component {
   }
 }
 
-// New Dashboard Component
+/**
+ * DashboardComponent
+ * Simple analytics cards and quick actions.
+ * @extends Component
+ */
 class DashboardComponent extends Component {
   Mounting() {
     if (this.framework.getState("stats") === undefined) {
@@ -839,7 +834,7 @@ class DashboardComponent extends Component {
                 this.framework.createVElement(
                   "h3",
                   { style: "margin: 10px 0 5px 0;" },
-                  ["Visiteurs"]
+                  ["Visitors"]
                 ),
                 this.framework.createVElement(
                   "div",
@@ -863,7 +858,7 @@ class DashboardComponent extends Component {
                 this.framework.createVElement(
                   "h3",
                   { style: "margin: 10px 0 5px 0;" },
-                  ["Ventes"]
+                  ["Sales"]
                 ),
                 this.framework.createVElement(
                   "div",
@@ -887,7 +882,7 @@ class DashboardComponent extends Component {
                 this.framework.createVElement(
                   "h3",
                   { style: "margin: 10px 0 5px 0;" },
-                  ["Revenus"]
+                  ["Revenue"]
                 ),
                 this.framework.createVElement(
                   "div",
@@ -911,7 +906,7 @@ class DashboardComponent extends Component {
                 this.framework.createVElement(
                   "h3",
                   { style: "margin: 10px 0 5px 0;" },
-                  ["Croissance"]
+                  ["Growth"]
                 ),
                 this.framework.createVElement(
                   "div",
@@ -930,7 +925,7 @@ class DashboardComponent extends Component {
               "background: rgba(255,255,255,0.1); padding: 30px; border-radius: 20px;",
           },
           [
-            this.framework.createVElement("h2", {}, ["🎯 Actions rapides"]),
+            this.framework.createVElement("h2", {}, ["🎯 Quick actions"]),
             this.framework.createVElement(
               "div",
               {
@@ -953,9 +948,10 @@ class DashboardComponent extends Component {
                     this.framework.createVElement("i", {
                       class: "fas fa-refresh",
                     }),
-                    " Actualiser visiteurs",
+                    " Refresh visitors",
                   ]
                 ),
+
                 this.framework.createVElement(
                   "button",
                   {
@@ -985,9 +981,10 @@ class DashboardComponent extends Component {
                     this.framework.createVElement("i", {
                       class: "fas fa-plus",
                     }),
-                    " Simuler vente",
+                    " Simulate sale",
                   ]
                 ),
+
                 this.framework.createVElement(
                   "button",
                   {
@@ -1005,7 +1002,7 @@ class DashboardComponent extends Component {
                     this.framework.createVElement("i", {
                       class: "fas fa-undo",
                     }),
-                    " Reset données",
+                    " Reset data",
                   ]
                 ),
               ]
@@ -1017,10 +1014,7 @@ class DashboardComponent extends Component {
   }
 }
 
-const app = new Framework({
-  theme: "dark",
-  notifications: [],
-});
+const app = new Framework({ theme: "dark", notifications: [] });
 
 app.route("/", HomeComponent);
 app.route("/counter", CounterComponent);
