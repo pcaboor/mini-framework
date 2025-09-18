@@ -27,6 +27,8 @@ export function diff(oldVTree, newVTree) {
 
 // Listener registry to avoid duplicate listeners and enable deterministic cleanup
 const listenerMap = new WeakMap();
+// Note: using a WeakMap keyed by DOM elements avoids memory leaks
+// because keys are garbage-collected when elements are removed.
 
 function addListener(element, evt, handler, framework = null) {
   let map = listenerMap.get(element);
@@ -78,6 +80,10 @@ function removeListener(element, evt, handler) {
   if (set.size === 0) map.delete(evt);
   if (map.size === 0) listenerMap.delete(element);
 }
+
+// Best practice: keep add/remove listener logic centralized so that
+// components don't directly call addEventListener/removeEventListener,
+// avoiding accidental duplicates and making cleanup deterministic.
 
 function updateProps(element, oldProps = {}, newProps = {}, framework = null) {
   const allProps = { ...oldProps, ...newProps };

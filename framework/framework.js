@@ -15,6 +15,8 @@ export class Framework {
 
   initBrowserNavigation() {
     // Use hash routing to avoid server 404s on refresh for simple static servers
+    // Hash routing keeps URLs deterministic for static hosting without
+    // extra server configuration. It's simple and reliable for this demo.
     window.addEventListener("hashchange", () => {
       this.renderthisPath(this.getCurrentPath());
     });
@@ -67,6 +69,7 @@ export class Framework {
       lastComponent.UnMounting();
     }
 
+    // Run registered cleanup callbacks (e.g. event listeners)
     if (pathChanged) {
       this.Event.forEach((fn) => fn());
       this.Event = [];

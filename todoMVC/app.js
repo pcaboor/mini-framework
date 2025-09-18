@@ -1,4 +1,4 @@
-import { Framework } from "../framework/framwork.js";
+import { Framework } from "../framework/framework.js";
 import { Component } from "../framework/component.js";
 
 class TodoApp extends Component {

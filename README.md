@@ -28,7 +28,7 @@
 mini-framework/
 ├── framework/
 │   ├── component.js      # Classe de base pour vos composants
-│   ├── framwork.js       # Classe principale du framework (routing, state, etc.)
+│   ├── framework.js       # Classe principale du framework (routing, state, etc.)
 │   └── helpers.js        # Fonctions utilitaires (Virtual DOM, diff, etc.)
 ├── todoMVC/              # Application TodoMVC complète en exemple
 │   ├── index.html
@@ -89,11 +89,11 @@ Pour vérifier rapidement : ouvrir `http://localhost:8000`, aller sur la route T
 
 - **VDOM :** implémentation dans `framework/helpers.js` — fonctions clés : `createVElement`, `VDomToReelDom`, `diff`, `updateDOM`. Vérifier : modification d'un composant provoque un patch minimal sur le DOM (inspecter éléments et classes en DevTools).
 
-- **Routage :** implémentation dans `framework/framwork.js` — fonctions : `getCurrentPath()`, `navigateTo(path)` et écouteur `hashchange`. Vérifier : changement d'URL via `app.navigateTo('/path')` met à jour le hash et le composant affiché ; rafraîchir la page ne doit pas renvoyer 404 sur un serveur statique.
+- **Routage :** implémentation dans `framework/framework.js` — fonctions : `getCurrentPath()`, `navigateTo(path)` et écouteur `hashchange`. Vérifier : changement d'URL via `app.navigateTo('/path')` met à jour le hash et le composant affiché ; rafraîchir la page ne doit pas renvoyer 404 sur un serveur statique.
 
-- **Gestion d'état :** implémentation dans `framework/framwork.js` — API : `getState(name)`, `setState(name, value)`, `setWState(name, value)`. Vérifier : `setState` déclenche re-render, `setWState` ne déclenche pas de re-render.
+- **Gestion d'état :** implémentation dans `framework/framework.js` — API : `getState(name)`, `setState(name, value)`, `setWState(name, value)`. Vérifier : `setState` déclenche re-render, `setWState` ne déclenche pas de re-render.
 
-- **Événements et nettoyage :** modifications appliquées dans `framework/helpers.js` — mécanisme : `listenerMap` (WeakMap), utilitaires `addListener()` / `removeListener()` et intégration dans `updateProps`/`setProp`. Vérifier : naviguer entre pages et observer absence de doublons d'écouteurs (console, profiler, ou instrumentation simple `console.count()` dans un handler).
+- **Événements et nettoyage :** modifications appliquées dans `framework/helpers.js` — mécanisme : `listenerMap` (WeakMap), utilitaires `addListener()` / `removeListener()` et intégration dans `updateProps`/`setProp`. Vérifier : naviguer entre pages et observer absence de doublons d'écouteurs (console ou profiler). Une instrumentation temporaire a été utilisée pendant l'audit et a été retirée des sources.
 
 - **Persistance TodoMVC :** l'exemple utilise `localStorage` avec la clé `miniframework_todos_v1` (voir `todoMVC/` ou la logique dans `main.js` / `TodoDemoComponent`). Vérifier : ajouter des todos, recharger la page, les todos persistent.
 
@@ -108,7 +108,7 @@ Pour vérifier rapidement : ouvrir `http://localhost:8000`, aller sur la route T
 
 - **Emplacement des éléments à relire pour l'audit :**
   - VDOM & events : `framework/helpers.js`
-  - Framework (routing/state/ref) : `framework/framwork.js`
+  - Framework (routing/state/ref) : `framework/framework.js`
   - Composants de base : `framework/component.js`
   - Démo Todo et persistance : `todoMVC/` et `main.js`
 
@@ -149,7 +149,7 @@ Créez votre application :
 
 ```js
 // main.js
-import { Framework } from "./framework/framwork.js";
+import { Framework } from "./framework/framework.js";
 import { Component } from "./framework/component.js";
 
 class HelloComponent extends Component {
@@ -645,7 +645,7 @@ mon-projet/
 │   └── main.css
 └── framework/         # Copié depuis ce repo
     ├── component.js
-    ├── framwork.js
+  ├── framework.js
     └── helpers.js
 ```
 
@@ -673,7 +673,7 @@ mon-projet/
 
 ```js
 // main.js
-import { Framework } from "./framework/framwork.js";
+import { Framework } from "./framework/framework.js";
 import { HomePage } from "./pages/HomePage.js";
 import { AboutPage } from "./pages/AboutPage.js";
 import { ContactPage } from "./pages/ContactPage.js";

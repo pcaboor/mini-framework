@@ -1,4 +1,4 @@
-import { Framework } from "./framework/framwork.js";
+import { Framework } from "./framework/framework.js";
 import { Component } from "./framework/component.js";
 
 class NavigationComponent extends Component {
@@ -555,9 +555,7 @@ class TodoDemoComponent extends Component {
     if (!newTodo.trim()) return;
 
     // instrumentation: count adds during audit (helps detect duplicate handlers)
-    try {
-      console.count("todo.add");
-    } catch (e) {}
+    // instrumentation removed: was used temporarily during audit
 
     const todos = this.framework.getState("todos") || [];
     const newId = Math.max(0, ...todos.map((t) => t.id)) + 1;
@@ -731,9 +729,6 @@ class TodoDemoComponent extends Component {
                       type: "checkbox",
                       checked: todo.completed,
                       onChange: () => {
-                        try {
-                          console.count("todo.toggle");
-                        } catch (e) {}
                         this.updateTodos(
                           todos.map((t) =>
                             t.id === todo.id
@@ -758,9 +753,7 @@ class TodoDemoComponent extends Component {
                   {
                     class: "delete-btn",
                     onClick: () => {
-                      try {
-                        console.count("todo.delete");
-                      } catch (e) {}
+                      // delete handler
                       this.updateTodos(todos.filter((t) => t.id !== todo.id));
                     },
                   },
