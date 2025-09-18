@@ -21,26 +21,17 @@ class NavigationComponent extends Component {
         {
           href: "#",
           class: "nav-item",
+          "aria-label": "Home",
           onClick: (e) => {
             e.preventDefault();
             this.framework.navigateTo("/");
           },
         },
-        [this.framework.createVElement("i", { class: "fas fa-home" }), "Home"]
-      ),
-      this.framework.createVElement(
-        "a",
-        {
-          href: "#",
-          class: "nav-item",
-          onClick: (e) => {
-            e.preventDefault();
-            this.framework.navigateTo("/counter");
-          },
-        },
         [
-          this.framework.createVElement("i", { class: "fas fa-calculator" }),
-          "Counter",
+          this.framework.createVElement("i", { class: "fas fa-home" }),
+          this.framework.createVElement("span", { class: "nav-label" }, [
+            "Home",
+          ]),
         ]
       ),
       this.framework.createVElement(
@@ -48,30 +39,61 @@ class NavigationComponent extends Component {
         {
           href: "#",
           class: "nav-item",
+          "aria-label": "Counter",
+          onClick: (e) => {
+            e.preventDefault();
+            this.framework.navigateTo("/counter");
+          },
+        },
+        [
+          this.framework.createVElement("i", { class: "fas fa-calculator" }),
+          this.framework.createVElement("span", { class: "nav-label" }, [
+            "Counter",
+          ]),
+        ]
+      ),
+      this.framework.createVElement(
+        "a",
+        {
+          href: "#",
+          class: "nav-item",
+          "aria-label": "Form",
           onClick: (e) => {
             e.preventDefault();
             this.framework.navigateTo("/form");
           },
         },
-        [this.framework.createVElement("i", { class: "fas fa-edit" }), "Form"]
+        [
+          this.framework.createVElement("i", { class: "fas fa-edit" }),
+          this.framework.createVElement("span", { class: "nav-label" }, [
+            "Form",
+          ]),
+        ]
       ),
       this.framework.createVElement(
         "a",
         {
           href: "#",
           class: "nav-item",
+          "aria-label": "Todo",
           onClick: (e) => {
             e.preventDefault();
             this.framework.navigateTo("/todo");
           },
         },
-        [this.framework.createVElement("i", { class: "fas fa-tasks" }), "Todo"]
+        [
+          this.framework.createVElement("i", { class: "fas fa-tasks" }),
+          this.framework.createVElement("span", { class: "nav-label" }, [
+            "Todo",
+          ]),
+        ]
       ),
       this.framework.createVElement(
         "a",
         {
           href: "#",
           class: "nav-item",
+          "aria-label": "Dashboard",
           onClick: (e) => {
             e.preventDefault();
             this.framework.navigateTo("/dashboard");
@@ -79,7 +101,9 @@ class NavigationComponent extends Component {
         },
         [
           this.framework.createVElement("i", { class: "fas fa-chart-bar" }),
-          "Dashboard",
+          this.framework.createVElement("span", { class: "nav-label" }, [
+            "Dashboard",
+          ]),
         ]
       ),
     ]);
@@ -645,8 +669,8 @@ class TodoDemoComponent extends Component {
         this.framework.createVElement(
           "div",
           {
-            style:
-              "display: flex; justify-content: center; gap: 30px; margin-bottom: 30px;",
+            class: "todo-stats",
+            style: "justify-content: center; gap: 30px; margin-bottom: 30px;",
           },
           [
             this.framework.createVElement(
@@ -727,6 +751,7 @@ class TodoDemoComponent extends Component {
         this.framework.createVElement(
           "div",
           {
+            class: "todo-filters",
             style:
               "display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;",
           },
@@ -958,8 +983,8 @@ class DashboardComponent extends Component {
             this.framework.createVElement(
               "div",
               {
-                style:
-                  "display: flex; flex-wrap: wrap; gap: 15px; margin-top: 20px;",
+                class: "quick-actions",
+                style: "flex-wrap: wrap; gap: 15px; margin-top: 20px;",
               },
               [
                 this.framework.createVElement(
