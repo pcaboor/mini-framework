@@ -12,7 +12,34 @@ class TodoApp extends Component {
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
       const parsed = getLocal("miniframework_todos_v1");
-      this.framework.setWState("todos", parsed || []);
+      if (parsed && Array.isArray(parsed)) {
+        const translations = {
+          "🎯 Apprendre le framework": "🎯 Learn the framework",
+          "🚀 Créer une application": "🚀 Create an app",
+          "✨ Ajouter des animations": "✨ Add animations",
+          "Apprendre le framework": "Learn the framework",
+          "Créer une application": "Create an app",
+          "Ajouter des animations": "Add animations",
+        };
+        const migrated = parsed.map((t) => ({
+          ...t,
+          text: translations[t.text] || t.text,
+        }));
+        this.framework.setWState("todos", migrated);
+        try {
+          setLocal("miniframework_todos_v1", migrated);
+        } catch (e) {}
+      } else {
+        const defaults = [
+          { id: 1, text: "🎯 Learn the framework", completed: false },
+          { id: 2, text: "🚀 Create an app", completed: true },
+          { id: 3, text: "✨ Add animations", completed: false },
+        ];
+        this.framework.setWState("todos", defaults);
+        try {
+          setLocal("miniframework_todos_v1", defaults);
+        } catch (e) {}
+      }
     }
     if (this.framework.getState("newTodo") === undefined) {
       this.framework.setWState("newTodo", "");

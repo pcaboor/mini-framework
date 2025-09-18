@@ -471,6 +471,52 @@ textarea:focus {
   box-shadow: var(--shadow-heavy);
 }
 
+/* Stat color variants */
+.stat-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+.stat-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+.stat-revenue {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+.stat-growth {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+/* Reflection / shimmer effect shared with nav and buttons */
+.reflect {
+  position: relative;
+  overflow: hidden;
+}
+
+.reflect::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 120%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.reflect:hover::before {
+  left: 120%;
+}
+
 .stat-number {
   font-size: 2.5rem;
   font-weight: 800;

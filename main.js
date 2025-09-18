@@ -546,14 +546,33 @@ class TodoDemoComponent extends Component {
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
       const parsed = getLocal("miniframework_todos_v1");
-      if (parsed) {
-        this.framework.setWState("todos", parsed);
+      if (parsed && Array.isArray(parsed)) {
+        const translations = {
+          "🎯 Apprendre le framework": "🎯 Learn the framework",
+          "🚀 Créer une application": "🚀 Create an app",
+          "✨ Ajouter des animations": "✨ Add animations",
+          "Apprendre le framework": "Learn the framework",
+          "Créer une application": "Create an app",
+          "Ajouter des animations": "Add animations",
+        };
+        const migrated = parsed.map((t) => ({
+          ...t,
+          text: translations[t.text] || t.text,
+        }));
+        this.framework.setWState("todos", migrated);
+        try {
+          setLocal("miniframework_todos_v1", migrated);
+        } catch (e) {}
       } else {
-        this.framework.setWState("todos", [
+        const defaults = [
           { id: 1, text: "🎯 Learn the framework", completed: false },
           { id: 2, text: "🚀 Create an app", completed: true },
           { id: 3, text: "✨ Add animations", completed: false },
-        ]);
+        ];
+        this.framework.setWState("todos", defaults);
+        try {
+          setLocal("miniframework_todos_v1", defaults);
+        } catch (e) {}
       }
     }
     if (this.framework.getState("newTodo") === undefined) {
@@ -794,25 +813,32 @@ class TodoDemoComponent extends Component {
  */
 class DashboardComponent extends Component {
   Mounting() {
-    const s = this.framework.getState("stats");
-    if (!s || typeof s !== "object") {
-      this.framework.setWState("stats", {
-        visitors: 1247,
-        sales: 892,
-        revenue: 45320,
-        growth: 12.5,
-      });
+    // Load persisted stats if present
+    const persisted = getLocal("miniframework_stats_v1");
+    if (persisted && typeof persisted === "object") {
+      const normalized = {
+        visitors: Number(persisted.visitors) || 0,
+        sales: Number(persisted.sales) || 0,
+        revenue: Number(persisted.revenue) || 0,
+        growth: Number(persisted.growth) || 0,
+      };
+      this.framework.setWState("stats", normalized);
       return;
     }
 
-    // Normalize numeric fields to avoid NaN from undefined or string values
-    const normalized = {
-      visitors: Number(s.visitors) || 0,
-      sales: Number(s.sales) || 0,
-      revenue: Number(s.revenue) || 0,
-      growth: Number(s.growth) || 0,
-    };
-    this.framework.setWState("stats", normalized);
+    // Generate coherent random defaults
+    const visitors = 800 + Math.floor(Math.random() * 1201); // 800..2000
+    const convRate = (1 + Math.random() * 4) / 100; // 1%..5%
+    const sales = Math.max(1, Math.round(visitors * convRate));
+    const avgOrder = 20 + Math.floor(Math.random() * 101); // 20..120
+    const revenue = sales * avgOrder;
+    const growth = Number((Math.random() * 20 - 5).toFixed(1)); // -5 .. +15
+
+    const initial = { visitors, sales, revenue, growth };
+    this.framework.setWState("stats", initial);
+    try {
+      setLocal("miniframework_stats_v1", initial);
+    } catch (e) {}
   }
 
   getVDom() {
@@ -834,8 +860,8 @@ class DashboardComponent extends Component {
             this.framework.createVElement(
               "div",
               {
-                style:
-                  "background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 20px; text-align: center; color: white;",
+                class: "stat-card reflect stat-primary",
+                style: "padding:30px; border-radius:20px; text-align:center;",
               },
               [
                 this.framework.createVElement("i", {
@@ -847,19 +873,17 @@ class DashboardComponent extends Component {
                   { style: "margin: 10px 0 5px 0;" },
                   ["Visitors"]
                 ),
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2.5rem; font-weight: bold;" },
-                  [stats.visitors?.toLocaleString() || "0"]
-                ),
+                this.framework.createVElement("div", { class: "stat-number" }, [
+                  stats.visitors?.toLocaleString() || "0",
+                ]),
               ]
             ),
 
             this.framework.createVElement(
               "div",
               {
-                style:
-                  "background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 30px; border-radius: 20px; text-align: center; color: white;",
+                class: "stat-card reflect stat-secondary",
+                style: "padding:30px; border-radius:20px; text-align:center;",
               },
               [
                 this.framework.createVElement("i", {
@@ -871,19 +895,17 @@ class DashboardComponent extends Component {
                   { style: "margin: 10px 0 5px 0;" },
                   ["Sales"]
                 ),
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2.5rem; font-weight: bold;" },
-                  [stats.sales?.toLocaleString() || "0"]
-                ),
+                this.framework.createVElement("div", { class: "stat-number" }, [
+                  stats.sales?.toLocaleString() || "0",
+                ]),
               ]
             ),
 
             this.framework.createVElement(
               "div",
               {
-                style:
-                  "background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 30px; border-radius: 20px; text-align: center; color: white;",
+                class: "stat-card reflect stat-revenue",
+                style: "padding:30px; border-radius:20px; text-align:center;",
               },
               [
                 this.framework.createVElement("i", {
@@ -895,19 +917,17 @@ class DashboardComponent extends Component {
                   { style: "margin: 10px 0 5px 0;" },
                   ["Revenue"]
                 ),
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2.5rem; font-weight: bold;" },
-                  [`${stats.revenue?.toLocaleString() || "0"}€`]
-                ),
+                this.framework.createVElement("div", { class: "stat-number" }, [
+                  `${stats.revenue?.toLocaleString() || "0"}€`,
+                ]),
               ]
             ),
 
             this.framework.createVElement(
               "div",
               {
-                style:
-                  "background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 30px; border-radius: 20px; text-align: center; color: white;",
+                class: "stat-card reflect stat-growth",
+                style: "padding:30px; border-radius:20px; text-align:center;",
               },
               [
                 this.framework.createVElement("i", {
@@ -919,11 +939,9 @@ class DashboardComponent extends Component {
                   { style: "margin: 10px 0 5px 0;" },
                   ["Growth"]
                 ),
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2.5rem; font-weight: bold;" },
-                  [`+${stats.growth || 0}%`]
-                ),
+                this.framework.createVElement("div", { class: "stat-number" }, [
+                  `+${stats.growth || 0}%`,
+                ]),
               ]
             ),
           ]
@@ -962,13 +980,16 @@ class DashboardComponent extends Component {
                       );
                       newStats.visitors += vDelta;
                       this.framework.setState("stats", newStats);
+                      try {
+                        setLocal("miniframework_stats_v1", newStats);
+                      } catch (e) {}
                     },
                   },
                   [
                     this.framework.createVElement("i", {
-                      class: "fas fa-refresh",
+                      class: "fas fa-user-plus",
                     }),
-                    " Refresh visitors",
+                    " Add visitors",
                   ]
                 ),
 
@@ -1006,6 +1027,9 @@ class DashboardComponent extends Component {
                             )
                           : 0;
                       this.framework.setState("stats", newStats);
+                      try {
+                        setLocal("miniframework_stats_v1", newStats);
+                      } catch (e) {}
                     },
                   },
                   [
@@ -1021,12 +1045,16 @@ class DashboardComponent extends Component {
                   {
                     class: "modern-btn",
                     onClick: () => {
-                      this.framework.setState("stats", {
+                      const reset = {
                         visitors: 1247,
                         sales: 892,
                         revenue: 45320,
                         growth: 12.5,
-                      });
+                      };
+                      this.framework.setState("stats", reset);
+                      try {
+                        setLocal("miniframework_stats_v1", reset);
+                      } catch (e) {}
                     },
                   },
                   [
