@@ -3,11 +3,6 @@ import { Component } from "./framework/component.js";
 import { getLocal, setLocal } from "./framework/storage.js";
 
 /**
-import { Framework } from "./framework/framework.js";
-import { Component } from "./framework/component.js";
-import { getLocal, setLocal } from "./framework/storage.js";
-
-/**
  * NavigationComponent
  * Simple top navigation for demo routes.
  * @extends Component

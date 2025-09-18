@@ -1,0 +1,20 @@
+{
+  "name": "mini-framework",
+  "version": "1.0.0",
+  "description": "Custom JavaScript framework with Virtual DOM, routing, and state management",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "check": "node --check main.js && node --check framework/framework.js && node --check framework/component.js && node --check framework/storage.js && node --check framework/helpers.js"
+  },
+  "keywords": [
+    "framework",
+    "virtual-dom",
+    "spa",
+    "routing",
+    "state-management"
+  ],
+  "author": "",
+  "license": "MIT"
+}
