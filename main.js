@@ -693,60 +693,53 @@ class TodoDemoComponent extends Component {
       this.framework.createVElement("div", { class: "content-card" }, [
         this.framework.createVElement("h1", {}, ["📋 Todo Manager Pro"]),
 
-        this.framework.createVElement(
-          "div",
-          {
-            class: "todo-stats",
-            style: "justify-content: center; gap: 30px; margin-bottom: 30px;",
-          },
-          [
-            this.framework.createVElement(
-              "div",
-              {
-                style:
-                  "text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 15px;",
-              },
-              [
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2rem; font-weight: bold;" },
-                  [String(todos.length)]
-                ),
-                this.framework.createVElement("div", {}, ["Total"]),
-              ]
-            ),
-            this.framework.createVElement(
-              "div",
-              {
-                style:
-                  "text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 15px;",
-              },
-              [
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2rem; font-weight: bold;" },
-                  [String(todos.length - completedCount)]
-                ),
-                this.framework.createVElement("div", {}, ["Active"]),
-              ]
-            ),
-            this.framework.createVElement(
-              "div",
-              {
-                style:
-                  "text-align: center; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 15px;",
-              },
-              [
-                this.framework.createVElement(
-                  "div",
-                  { style: "font-size: 2rem; font-weight: bold;" },
-                  [String(completedCount)]
-                ),
-                this.framework.createVElement("div", {}, ["Completed"]),
-              ]
-            ),
-          ]
-        ),
+        this.framework.createVElement("div", { class: "todo-stats" }, [
+          this.framework.createVElement(
+            "div",
+            {
+              class: "stat-card stat-primary",
+              style: "text-align:center; padding:12px; border-radius:12px;",
+            },
+            [
+              this.framework.createVElement("div", { class: "stat-number" }, [
+                String(todos.length),
+              ]),
+              this.framework.createVElement("div", { class: "stat-label" }, [
+                "Total",
+              ]),
+            ]
+          ),
+          this.framework.createVElement(
+            "div",
+            {
+              class: "stat-card stat-revenue",
+              style: "text-align:center; padding:12px; border-radius:12px;",
+            },
+            [
+              this.framework.createVElement("div", { class: "stat-number" }, [
+                String(todos.length - completedCount),
+              ]),
+              this.framework.createVElement("div", { class: "stat-label" }, [
+                "Active",
+              ]),
+            ]
+          ),
+          this.framework.createVElement(
+            "div",
+            {
+              class: "stat-card stat-secondary",
+              style: "text-align:center; padding:12px; border-radius:12px;",
+            },
+            [
+              this.framework.createVElement("div", { class: "stat-number" }, [
+                String(completedCount),
+              ]),
+              this.framework.createVElement("div", { class: "stat-label" }, [
+                "Completed",
+              ]),
+            ]
+          ),
+        ]),
 
         this.framework.createVElement(
           "div",
@@ -766,10 +759,17 @@ class TodoDemoComponent extends Component {
             }),
             this.framework.createVElement(
               "button",
-              { class: "modern-btn", onClick: () => this.addTodo() },
+              {
+                class: "modern-btn",
+                onClick: () => this.addTodo(),
+                "aria-label": "Add todo",
+                title: "Add todo",
+              },
               [
                 this.framework.createVElement("i", { class: "fas fa-plus" }),
-                " Add",
+                this.framework.createVElement("span", { class: "label-text" }, [
+                  " Add",
+                ]),
               ]
             ),
             this.framework.createVElement(
@@ -782,12 +782,16 @@ class TodoDemoComponent extends Component {
                     // optional: show a small notification in the framework
                   }
                 },
+                "aria-label": "Refresh todos",
+                title: "Refresh todos",
               },
               [
                 this.framework.createVElement("i", {
                   class: "fas fa-sync-alt",
                 }),
-                " Refresh",
+                this.framework.createVElement("span", { class: "label-text" }, [
+                  " Refresh",
+                ]),
               ]
             ),
           ]
