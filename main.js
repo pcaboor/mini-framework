@@ -963,7 +963,8 @@ class DashboardComponent extends Component {
                     onClick: () => {
                       const newStats = { ...stats };
                       const saleDelta = Math.floor(Math.random() * 10) || 1;
-                      const revenueDelta = Math.floor(Math.random() * 1000) || 1;
+                      const revenueDelta =
+                        Math.floor(Math.random() * 1000) || 1;
                       const prevRevenue = newStats.revenue || 0;
                       newStats.sales += saleDelta;
                       newStats.revenue += revenueDelta;
@@ -971,7 +972,11 @@ class DashboardComponent extends Component {
                         prevRevenue === 0
                           ? 0
                           : Number(
-                              (((newStats.revenue - prevRevenue) / prevRevenue) * 100).toFixed(1)
+                              (
+                                ((newStats.revenue - prevRevenue) /
+                                  prevRevenue) *
+                                100
+                              ).toFixed(1)
                             );
                       this.framework.setState("stats", newStats);
                     },
