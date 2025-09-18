@@ -361,7 +361,7 @@ class FormComponent extends Component {
       new NavigationComponent(this.framework).getVDom(),
 
       this.framework.createVElement("div", { class: "content-card" }, [
-        this.framework.createVElement("h1", {}, ["📝 Contact Form Pro"]),
+        this.framework.createVElement("h1", {}, ["📝 Contact Form"]),
 
         this.framework.createVElement(
           "div",
@@ -794,14 +794,25 @@ class TodoDemoComponent extends Component {
  */
 class DashboardComponent extends Component {
   Mounting() {
-    if (this.framework.getState("stats") === undefined) {
+    const s = this.framework.getState("stats");
+    if (!s || typeof s !== "object") {
       this.framework.setWState("stats", {
         visitors: 1247,
         sales: 892,
         revenue: 45320,
         growth: 12.5,
       });
+      return;
     }
+
+    // Normalize numeric fields to avoid NaN from undefined or string values
+    const normalized = {
+      visitors: Number(s.visitors) || 0,
+      sales: Number(s.sales) || 0,
+      revenue: Number(s.revenue) || 0,
+      growth: Number(s.growth) || 0,
+    };
+    this.framework.setWState("stats", normalized);
   }
 
   getVDom() {
@@ -938,8 +949,17 @@ class DashboardComponent extends Component {
                   {
                     class: "modern-btn",
                     onClick: () => {
-                      const newStats = { ...stats };
-                      const vDelta = Math.floor(Math.random() * 100) || 1;
+                      const s = this.framework.getState("stats") || {};
+                      const newStats = {
+                        visitors: Number(s.visitors) || 0,
+                        sales: Number(s.sales) || 0,
+                        revenue: Number(s.revenue) || 0,
+                        growth: Number(s.growth) || 0,
+                      };
+                      const vDelta = Math.max(
+                        1,
+                        Math.floor(Math.random() * 100)
+                      );
                       newStats.visitors += vDelta;
                       this.framework.setState("stats", newStats);
                     },
@@ -957,23 +977,34 @@ class DashboardComponent extends Component {
                   {
                     class: "modern-btn",
                     onClick: () => {
-                      const newStats = { ...stats };
-                      const saleDelta = Math.floor(Math.random() * 10) || 1;
-                      const revenueDelta =
-                        Math.floor(Math.random() * 1000) || 1;
-                      const prevRevenue = newStats.revenue || 0;
+                      const s = this.framework.getState("stats") || {};
+                      const newStats = {
+                        visitors: Number(s.visitors) || 0,
+                        sales: Number(s.sales) || 0,
+                        revenue: Number(s.revenue) || 0,
+                        growth: Number(s.growth) || 0,
+                      };
+                      const saleDelta = Math.max(
+                        1,
+                        Math.floor(Math.random() * 10)
+                      );
+                      const revenueDelta = Math.max(
+                        1,
+                        Math.floor(Math.random() * 1000)
+                      );
+                      const prevRevenue = newStats.revenue;
                       newStats.sales += saleDelta;
                       newStats.revenue += revenueDelta;
                       newStats.growth =
-                        prevRevenue === 0
-                          ? 0
-                          : Number(
+                        prevRevenue > 0
+                          ? Number(
                               (
                                 ((newStats.revenue - prevRevenue) /
                                   prevRevenue) *
                                 100
                               ).toFixed(1)
-                            );
+                            )
+                          : 0;
                       this.framework.setState("stats", newStats);
                     },
                   },
