@@ -617,6 +617,32 @@ class TodoDemoComponent extends Component {
     }
   }
 
+  /** Reload persisted todos from storage and apply migration if needed */
+  refreshTodos() {
+    try {
+      const parsed = getLocal("miniframework_todos_v1");
+      if (parsed && Array.isArray(parsed)) {
+        const translations = {
+          "🎯 Apprendre le framework": "🎯 Learn the framework",
+          "🚀 Créer une application": "🚀 Create an app",
+          "✨ Ajouter des animations": "✨ Add animations",
+          "Apprendre le framework": "Learn the framework",
+          "Créer une application": "Create an app",
+          "Ajouter des animations": "Add animations",
+        };
+        const migrated = parsed.map((t) => ({
+          ...t,
+          text: translations[t.text] || t.text,
+        }));
+        this.framework.setState("todos", migrated);
+        return true;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return false;
+  }
+
   /** Update the todos list in state and persist it. */
   updateTodos(newTodos) {
     this.framework.setState("todos", newTodos);
@@ -743,6 +769,24 @@ class TodoDemoComponent extends Component {
               [
                 this.framework.createVElement("i", { class: "fas fa-plus" }),
                 " Add",
+              ]
+            ),
+            this.framework.createVElement(
+              "button",
+              {
+                class: "modern-btn",
+                onClick: () => {
+                  const ok = this.refreshTodos();
+                  if (!ok) {
+                    // optional: show a small notification in the framework
+                  }
+                },
+              },
+              [
+                this.framework.createVElement("i", {
+                  class: "fas fa-sync-alt",
+                }),
+                " Refresh",
               ]
             ),
           ]
@@ -945,6 +989,12 @@ class DashboardComponent extends Component {
                 this.framework.createVElement("div", { class: "stat-number" }, [
                   `${stats.revenue?.toLocaleString() || "0"}€`,
                 ]),
+                // sparkline area
+                this.framework.createVElement(
+                  "div",
+                  { style: "margin-top:12px;" },
+                  ["(trend removed)"]
+                ),
               ]
             ),
 
@@ -1076,6 +1126,7 @@ class DashboardComponent extends Component {
                         revenue: 45320,
                         growth: 12.5,
                       };
+                      // reset trend to coherent values
                       this.framework.setState("stats", reset);
                       try {
                         setLocal("miniframework_stats_v1", reset);
@@ -1096,6 +1147,8 @@ class DashboardComponent extends Component {
       ]),
     ]);
   }
+
+  /** Helper: render a small sparkline SVG from an array of numbers */
 }
 
 const app = new Framework({ theme: "dark", notifications: [] });

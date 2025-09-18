@@ -397,6 +397,22 @@ textarea:focus {
   color: var(--text-light);
 }
 
+/* Center titles and the following line inside main cards */
+.content-card h1,
+.content-card h2,
+.content-card h3,
+.stat-card h3,
+.feature-card h3 {
+  text-align: center;
+}
+
+.content-card h1 + p,
+.content-card h2 + p,
+.stat-card h3 + .stat-number,
+.feature-card h3 + p {
+  text-align: center;
+}
+
 /* Keep stat card icons black so they visually match feature icons */
 .stat-card i {
   color: #111111;
