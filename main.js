@@ -1,5 +1,6 @@
 import { Framework } from "./framework/framework.js";
 import { Component } from "./framework/component.js";
+import { getLocal, setLocal } from "./framework/storage.js";
 
 /**
  * NavigationComponent
@@ -100,7 +101,7 @@ class HomeComponent extends Component {
               "text-align: center; font-size: 1.2rem; margin-bottom: 40px; opacity: 0.9;",
           },
           [
-            "Un framework JavaScript moderne avec Virtual DOM, routage et gestion d'état",
+            "A modern JavaScript framework with Virtual DOM, routing and state management",
           ]
         ),
 
@@ -111,16 +112,16 @@ class HomeComponent extends Component {
             }),
             this.framework.createVElement("h3", {}, ["Virtual DOM"]),
             this.framework.createVElement("p", {}, [
-              "Diff et patch optimisés pour des performances maximales",
+              "Optimized diff and patch for maximum performance",
             ]),
           ]),
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-route",
             }),
-            this.framework.createVElement("h3", {}, ["Routage SPA"]),
+            this.framework.createVElement("h3", {}, ["SPA Routing"]),
             this.framework.createVElement("p", {}, [
-              "Navigation fluide avec support du bouton retour",
+              "Smooth navigation with back-button support",
             ]),
           ]),
           this.framework.createVElement("div", { class: "feature-card" }, [
@@ -129,7 +130,7 @@ class HomeComponent extends Component {
             }),
             this.framework.createVElement("h3", {}, ["State Management"]),
             this.framework.createVElement("p", {}, [
-              "Gestion d'état centralisée avec re-render automatique",
+              "Centralized state with automatic re-render",
             ]),
           ]),
           this.framework.createVElement("div", { class: "feature-card" }, [
@@ -138,16 +139,16 @@ class HomeComponent extends Component {
             }),
             this.framework.createVElement("h3", {}, ["Event Handling"]),
             this.framework.createVElement("p", {}, [
-              "Système d'événements personnalisé et optimisé",
+              "Custom, optimized event system",
             ]),
           ]),
           this.framework.createVElement("div", { class: "feature-card" }, [
             this.framework.createVElement("i", {
               class: "feature-icon fas fa-shield-alt",
             }),
-            this.framework.createVElement("h3", {}, ["Sécurité"]),
+            this.framework.createVElement("h3", {}, ["Security"]),
             this.framework.createVElement("p", {}, [
-              "Principes simples pour garder les composants prévisibles",
+              "Simple principles to keep components predictable",
             ]),
           ]),
 
@@ -157,7 +158,7 @@ class HomeComponent extends Component {
             }),
             this.framework.createVElement("h3", {}, ["UX & Styles"]),
             this.framework.createVElement("p", {}, [
-              "Composants stylés et cohérents pour une meilleure expérience",
+              "Styled, consistent components for a better experience",
             ]),
           ]),
         ]),
@@ -268,10 +269,10 @@ class CounterComponent extends Component {
           },
           [
             counter === 0
-              ? "🎯 Prêt à compter !"
+              ? "🎯 Ready to count!"
               : counter > 0
-                ? `🚀 Positif : +${counter}`
-                : `📉 Négatif : ${counter}`,
+                ? `🚀 Positive: +${counter}`
+                : `📉 Negative: ${counter}`,
           ]
         ),
       ]),
@@ -435,7 +436,7 @@ class FormComponent extends Component {
                   {
                     style: "display:block; margin-bottom:8px; font-weight:500;",
                   },
-                  ["Compétences :"]
+                  ["Skills:"]
                 ),
                 ...["JavaScript", "HTML", "CSS", "Node", "TypeScript"].map(
                   (skill) =>
@@ -467,9 +468,7 @@ class FormComponent extends Component {
                       this.framework.createVElement("div", {
                         class: "spinner",
                       }),
-                      this.framework.createVElement("p", {}, [
-                        "Envoi en cours...",
-                      ]),
+                      this.framework.createVElement("p", {}, ["Sending..."]),
                     ])
                   : status === "success"
                     ? this.framework.createVElement(
@@ -482,7 +481,7 @@ class FormComponent extends Component {
                           this.framework.createVElement("i", {
                             class: "fas fa-check-circle",
                           }),
-                          " Message envoyé avec succès !",
+                          " Message sent successfully!",
                         ]
                       )
                     : this.framework.createVElement(
@@ -499,7 +498,7 @@ class FormComponent extends Component {
                           this.framework.createVElement("i", {
                             class: "fas fa-paper-plane",
                           }),
-                          " Envoyer",
+                          " Send",
                         ]
                       ),
               ]
@@ -514,9 +513,7 @@ class FormComponent extends Component {
               "margin-top: 40px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px;",
           },
           [
-            this.framework.createVElement("h3", {}, [
-              "📋 Aperçu des données :",
-            ]),
+            this.framework.createVElement("h3", {}, ["📋 Data preview:"]),
             this.framework.createVElement(
               "pre",
               {
@@ -541,18 +538,9 @@ class TodoDemoComponent extends Component {
   /** Load initial state (todos, newTodo, filter) from localStorage */
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
-      const raw = localStorage.getItem("miniframework_todos_v1");
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          this.framework.setWState("todos", parsed);
-        } catch (e) {
-          this.framework.setWState("todos", [
-            { id: 1, text: "🎯 Apprendre le framework", completed: false },
-            { id: 2, text: "🚀 Créer une application", completed: true },
-            { id: 3, text: "✨ Ajouter des animations", completed: false },
-          ]);
-        }
+      const parsed = getLocal("miniframework_todos_v1");
+      if (parsed) {
+        this.framework.setWState("todos", parsed);
       } else {
         this.framework.setWState("todos", [
           { id: 1, text: "🎯 Apprendre le framework", completed: false },
@@ -573,7 +561,7 @@ class TodoDemoComponent extends Component {
   saveTodos() {
     try {
       const todos = this.framework.getState("todos") || [];
-      localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
+      setLocal("miniframework_todos_v1", todos);
     } catch (e) {
       /* ignore */
     }
@@ -666,7 +654,7 @@ class TodoDemoComponent extends Component {
                   { style: "font-size: 2rem; font-weight: bold;" },
                   [(todos.length - completedCount).toString()]
                 ),
-                this.framework.createVElement("div", {}, ["Actives"]),
+                this.framework.createVElement("div", {}, ["Active"]),
               ]
             ),
             this.framework.createVElement(
@@ -681,7 +669,7 @@ class TodoDemoComponent extends Component {
                   { style: "font-size: 2rem; font-weight: bold;" },
                   [completedCount.toString()]
                 ),
-                this.framework.createVElement("div", {}, ["Terminées"]),
+                this.framework.createVElement("div", {}, ["Completed"]),
               ]
             ),
           ]
@@ -698,7 +686,7 @@ class TodoDemoComponent extends Component {
               class: "modern-input",
               type: "text",
               value: newTodo,
-              placeholder: "Nouvelle tâche...",
+              placeholder: "New task...",
               style: "flex: 1;",
               onInput: (e) =>
                 this.framework.setState("newTodo", e.target.value),
@@ -728,9 +716,9 @@ class TodoDemoComponent extends Component {
               "display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;",
           },
           [
-            ["all", "Toutes"],
-            ["active", "Actives"],
-            ["completed", "Terminées"],
+            ["all", "All"],
+            ["active", "Active"],
+            ["completed", "Completed"],
           ].map(([filterKey, label]) =>
             this.framework.createVElement(
               "button",

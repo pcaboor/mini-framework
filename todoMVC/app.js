@@ -1,5 +1,6 @@
 import { Framework } from "../framework/framework.js";
 import { Component } from "../framework/component.js";
+import { getLocal, setLocal } from "../framework/storage.js";
 
 /**
  * TodoApp
@@ -10,17 +11,8 @@ class TodoApp extends Component {
   /** Load initial state from localStorage and initialize used keys */
   Mounting() {
     if (this.framework.getState("todos") === undefined) {
-      const raw = localStorage.getItem("miniframework_todos_v1");
-      if (raw) {
-        try {
-          const parsed = JSON.parse(raw);
-          this.framework.setWState("todos", parsed);
-        } catch (e) {
-          this.framework.setWState("todos", []);
-        }
-      } else {
-        this.framework.setWState("todos", []);
-      }
+      const parsed = getLocal("miniframework_todos_v1");
+      this.framework.setWState("todos", parsed || []);
     }
     if (this.framework.getState("newTodo") === undefined) {
       this.framework.setWState("newTodo", "");
@@ -40,7 +32,7 @@ class TodoApp extends Component {
   saveTodos() {
     try {
       const todos = this.framework.getState("todos") || [];
-      localStorage.setItem("miniframework_todos_v1", JSON.stringify(todos));
+      setLocal("miniframework_todos_v1", todos);
     } catch (e) {
       /* ignore storage errors */
     }
