@@ -159,9 +159,14 @@ body {
 /* Icônes Navigation */
 .nav-item i {
   font-size: 1.2rem;
-  color: #ffffff;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   margin-right: 0.5rem;
+}
+
+/* Ensure nav icons are white only when inside the nav to avoid global overrides */
+.nav .nav-item i,
+.nav .nav-link i {
+  color: var(--text-light);
 }
 
 .nav-item:hover i {
@@ -170,18 +175,23 @@ body {
   transition: all var(--animation-fast);
 }
 
-/* Couleurs spécifiques pour chaque icône */
-.fa-home {
-  color: #4caf50 !important;
+/* Couleurs spécifiques pour chaque icône (scoped to nav items to avoid !important)
+   Using more specific selectors so the rules win without `!important`. */
+.nav-item i.fa-home,
+.nav-link i.fa-home {
+  color: #4caf50;
 }
-.fa-calculator {
-  color: #ff9800 !important;
+.nav-item i.fa-calculator,
+.nav-link i.fa-calculator {
+  color: #ff9800;
 }
-.fa-edit {
-  color: #2196f3 !important;
+.nav-item i.fa-edit,
+.nav-link i.fa-edit {
+  color: #2196f3;
 }
-.fa-tasks {
-  color: #e91e63 !important;
+.nav-item i.fa-tasks,
+.nav-link i.fa-tasks {
+  color: #e91e63;
 }
 
 /* Titres Stylés */
@@ -377,7 +387,19 @@ textarea:focus {
 .feature-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
+  color: #111111; /* make icons black */
+  text-shadow: none;
+}
+
+/* Ensure feature-card text remains readable on dark/gradient backgrounds */
+.feature-card h3,
+.feature-card p {
   color: var(--text-light);
+}
+
+/* Keep stat card icons black so they visually match feature icons */
+.stat-card i {
+  color: #111111;
 }
 
 /* Liste Todo Stylée */
@@ -530,6 +552,28 @@ textarea:focus {
   font-weight: 500;
 }
 
+/* Base layouts for components we target responsively */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.todo-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.todo-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   #app {
@@ -551,6 +595,136 @@ textarea:focus {
 
   .glass-card {
     padding: 1.5rem;
+  }
+}
+
+/* Responsive: icon-only navbar on tablet and phone */
+@media (max-width: 900px) {
+  /* Keep nav horizontal on tablets and phones, center icons inside buttons */
+  .nav {
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    flex-direction: row; /* force horizontal */
+  }
+  .nav-item {
+    padding: 0.5rem 0.75rem;
+    min-width: 56px;
+    height: 56px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+  }
+  .nav-item i {
+    margin-right: 0;
+    display: block;
+    text-align: center;
+  }
+  .nav-label {
+    display: none;
+  }
+  /* Ensure nav label text (if visible) stays white */
+  .nav .nav-label,
+  .nav-item .nav-label {
+    color: var(--text-light);
+  }
+}
+
+/* Accessibility: visible focus styles for keyboard users when nav labels are hidden */
+.nav-item:focus,
+.nav-item:focus-visible,
+.nav-link:focus,
+.nav-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.35);
+  transform: translateY(-2px);
+}
+
+/* When a nav item receives keyboard focus, reveal its label for clarity */
+.nav-item:focus .nav-label,
+.nav-item:focus-visible .nav-label,
+.nav-link:focus .nav-label,
+.nav-link:focus-visible .nav-label {
+  display: inline-block;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--text-light);
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+  z-index: 40;
+}
+
+/* Quick actions responsive tweaks for small phones (iPhone SE ~375px) */
+@media (max-width: 375px) {
+  .quick-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .quick-actions .modern-btn {
+    width: 100%;
+    max-width: 340px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1rem;
+    border-radius: 12px;
+  }
+
+  .quick-actions .modern-btn i {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+}
+
+/* Center the small todo stats (Total / Active / Completed) on very small screens */
+@media (max-width: 375px) {
+  .todo-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .todo-stats > div {
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .todo-stats > div .stat-number {
+    display: block;
+    margin: 0 auto 6px auto;
+  }
+}
+
+/* Center and stack the filter buttons (All/Active/Completed) on very small screens */
+@media (max-width: 375px) {
+  .todo-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .todo-filters .modern-btn {
+    width: 100%;
+    max-width: 340px;
+    justify-content: center;
   }
 }
 
