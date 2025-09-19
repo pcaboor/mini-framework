@@ -1017,9 +1017,13 @@ textarea:focus {
 
   /* Icon-only buttons: hide textual labels but keep accessible aria-title */
   .modern-btn {
-    width: 44px;
+    /* Use automatic width so buttons can show labels when they exist
+       (we hide labels by default below but specific buttons override
+       this at smaller breakpoints). This keeps a consistent hit area
+       while allowing labeled buttons to expand naturally. */
+    width: auto;
     height: 44px;
-    padding: 0;
+    padding: 6px 10px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -1144,5 +1148,62 @@ textarea:focus {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Small-screen (iPhone SE) tweaks: ensure the contact form "Send" button
+   shows its label and has a large enough hit area. Placed at EOF so it
+   overrides earlier <=600px icon-only rules without using !important. */
+@media (max-width: 375px) {
+  .content-card form .modern-btn.send-btn,
+  .content-card form .modern-btn[title="Send"] {
+    width: 100%;
+    max-width: none;
+    padding: 12px 16px;
+    min-height: 48px;
+    font-size: 1.05rem;
+    line-height: 1.2;
+    white-space: normal;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .content-card form .modern-btn.send-btn .label-text,
+  .content-card form .modern-btn[title="Send"] .label-text {
+    display: inline-block;
+    margin-left: 6px;
+  }
+
+  /* Make sure disabled send button keeps its label and touch area */
+  .content-card form .modern-btn.send-btn[disabled],
+  .content-card form .modern-btn.send-btn[aria-disabled="true"] {
+    min-height: 48px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Apply same small-screen treatment to counter buttons for consistency */
+  .content-card .counter-btn {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: none;
+    padding: 12px 16px;
+    min-height: 48px;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: normal;
+  }
+
+  .content-card .counter-btn .label-text {
+    display: inline-block;
+    margin-left: 6px;
   }
 }
