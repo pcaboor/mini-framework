@@ -177,7 +177,7 @@ export function VDomToReelDom(vnode, framework = null) {
   const element = document.createElement(vnode.tag);
 
   for (const prop in vnode.props) {
-    handleProp(element, prop, vnode.props[prop], framework);
+    setProp(element, prop, vnode.props[prop], framework);
   }
 
   vnode.children?.forEach((child) => {
@@ -185,11 +185,6 @@ export function VDomToReelDom(vnode, framework = null) {
   });
 
   return element;
-}
-
-function handleProp(element, prop, value, framework = null) {
-  // Delegate to setProp which handles events, refs and properties
-  setProp(element, prop, value, framework);
 }
 
 export function updateDOM(parent, oldVTree, newVTree, framework = null) {

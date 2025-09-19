@@ -1167,7 +1167,10 @@ try {
 
 app.start();
 
-window.app = app;
+// Development debug access
+if (typeof window !== "undefined") {
+  window.app = app;
+}
 
 // Create a fixed theme toggle icon (top-right on desktop, tiny on mobile)
 (function createFixedThemeToggle() {

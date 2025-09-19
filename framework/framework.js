@@ -117,8 +117,4 @@ export class Framework {
   start() {
     this.renderthisPath(this.getCurrentPath());
   }
-
-  createVElement(tag, props = {}, children = []) {
-    return createVElement(tag, props, children);
-  }
 }
