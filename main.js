@@ -1204,16 +1204,13 @@ window.app = app;
 
     document.body.appendChild(icon);
 
-    // Auto-hide on scroll down for mobile UX ONLY
+    // Auto-hide on scroll down for better UX
     let lastScrollTop = 0;
     let scrollTimeout = null;
 
     window.addEventListener(
       "scroll",
       () => {
-        // Only apply scroll behavior on mobile (≤ 600px)
-        if (window.innerWidth > 600) return;
-
         const scrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
 

@@ -707,6 +707,16 @@ textarea:focus {
   margin-bottom: 30px;
 }
 
+/* Uniform container size for todo stats */
+.todo-stats > div {
+  min-width: 100px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Todo stat numbers: solid fallback then guarded gradient text */
 .todo-stats .stat-number {
   color: var(--text-light); /* solid fallback so '0' remains visible */
@@ -862,6 +872,57 @@ textarea:focus {
   }
 }
 
+/* Light theme overrides for better readability (applied with `data-theme="light"` or default) */
+:root[data-theme="light"] .stat-card.stat-primary .stat-number,
+:root:not([data-theme="dark"]) .stat-card.stat-primary .stat-number {
+  background: transparent;
+  color: #3f4a8c;
+  -webkit-text-fill-color: #3f4a8c;
+}
+
+:root[data-theme="light"] .stat-card.stat-secondary .stat-number,
+:root:not([data-theme="dark"]) .stat-card.stat-secondary .stat-number {
+  background: transparent;
+  color: #a8459c;
+  -webkit-text-fill-color: #a8459c;
+}
+
+:root[data-theme="light"] .stat-card.stat-revenue .stat-number,
+:root:not([data-theme="dark"]) .stat-card.stat-revenue .stat-number {
+  background: transparent;
+  color: #2563b8;
+  -webkit-text-fill-color: #2563b8;
+}
+
+:root[data-theme="light"] .stat-card.stat-growth .stat-number,
+:root:not([data-theme="dark"]) .stat-card.stat-growth .stat-number {
+  background: transparent;
+  color: #b8285a;
+  -webkit-text-fill-color: #b8285a;
+}
+
+/* Light theme todo stats */
+:root[data-theme="light"] .todo-stats > div:nth-child(1) .stat-number,
+:root:not([data-theme="dark"]) .todo-stats > div:nth-child(1) .stat-number {
+  background: transparent;
+  color: #3f4a8c;
+  -webkit-text-fill-color: #3f4a8c;
+}
+
+:root[data-theme="light"] .todo-stats > div:nth-child(2) .stat-number,
+:root:not([data-theme="dark"]) .todo-stats > div:nth-child(2) .stat-number {
+  background: transparent;
+  color: #2563b8;
+  -webkit-text-fill-color: #2563b8;
+}
+
+:root[data-theme="light"] .todo-stats > div:nth-child(3) .stat-number,
+:root:not([data-theme="dark"]) .todo-stats > div:nth-child(3) .stat-number {
+  background: transparent;
+  color: #a8459c;
+  -webkit-text-fill-color: #a8459c;
+}
+
 /* Dark theme overrides (applied with `data-theme="dark"`) */
 :root[data-theme="dark"] {
   --page-bg-gradient: linear-gradient(
@@ -977,8 +1038,8 @@ textarea:focus {
 /* Fixed theme toggle icon in top-right corner */
 .theme-toggle-fixed {
   position: fixed;
-  top: 12px;
-  right: 12px;
+  top: 6px;
+  right: 6px;
   z-index: 9999;
   font-size: 1.2rem;
   color: var(--text-light);
@@ -999,12 +1060,15 @@ textarea:focus {
 }
 
 .theme-toggle-fixed:hover,
-.theme-toggle-fixed:focus,
-.theme-toggle-fixed:active {
+.theme-toggle-fixed:focus {
   transform: translateY(-2px);
   opacity: 0.8;
   outline: none;
-  -webkit-tap-highlight-color: transparent;
+}
+
+.theme-toggle-fixed:active {
+  transform: translateY(1px);
+  transition: all 0.1s ease;
 }
 
 /* Center the small todo stats (Total / Active / Completed) on very small screens */
