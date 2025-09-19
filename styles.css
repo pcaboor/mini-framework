@@ -895,11 +895,42 @@ textarea:focus {
   --shadow-medium: 0 12px 35px rgba(0, 0, 0, 0.8);
 }
 
-/* Prevent the fixed theme toggle from overlapping the nav on small screens
-   when it sits in the top-right. Add extra top spacing for the nav at <=600px. */
+/* Reset mobile nav to normal behavior */
 @media (max-width: 600px) {
   .nav {
-    margin-top: 56px; /* leave room for the fixed toggle */
+    margin-top: 1rem;
+  }
+
+  /* Tiny theme toggle icon on mobile - just the icon, top-right corner */
+  .theme-toggle-fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    z-index: 9999;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
+    background: none;
+  }
+
+  .theme-toggle-fixed:hover,
+  .theme-toggle-fixed:focus,
+  .theme-toggle-fixed:active {
+    opacity: 1;
+    transform: scale(1.1);
+    color: rgba(255, 255, 255, 1);
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .theme-toggle-fixed.hidden {
+    opacity: 0;
+    transform: scale(0.3) translateY(-30px);
+    pointer-events: none;
   }
 }
 
@@ -943,43 +974,37 @@ textarea:focus {
   color: transparent;
 }
 
-/* Fixed theme toggle button in top-right corner */
+/* Fixed theme toggle icon in top-right corner */
 .theme-toggle-fixed {
   position: fixed;
   top: 12px;
   right: 12px;
   z-index: 9999;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.02)
-  );
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  font-size: 1.2rem;
   color: var(--text-light);
-}
-.theme-toggle-fixed i {
-  font-size: 1.05rem;
-}
-.theme-toggle-fixed:focus {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+  opacity: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   outline: none;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.18);
+  border: none;
+  background: none;
 }
 
-@media (max-width: 600px) {
-  .theme-toggle-fixed {
-    top: 10px;
-    right: 8px;
-    width: 40px;
-    height: 40px;
-  }
+.theme-toggle-fixed.hidden {
+  transform: translateY(-100px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.theme-toggle-fixed:hover,
+.theme-toggle-fixed:focus,
+.theme-toggle-fixed:active {
+  transform: translateY(-2px);
+  opacity: 0.8;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Center the small todo stats (Total / Active / Completed) on very small screens */

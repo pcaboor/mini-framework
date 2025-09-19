@@ -1169,16 +1169,18 @@ app.start();
 
 window.app = app;
 
-// Create a fixed top-right theme toggle button outside the nav
+// Create a fixed theme toggle icon (top-right on desktop, tiny on mobile)
 (function createFixedThemeToggle() {
   try {
-    const btn = document.createElement("button");
-    btn.className = "theme-toggle-fixed";
-    btn.setAttribute("aria-label", "Toggle theme");
-    btn.title = "Toggle theme";
-    btn.innerHTML = '<i class="fas fa-adjust" aria-hidden="true"></i>';
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
+    const icon = document.createElement("i");
+    icon.className = "fas fa-adjust theme-toggle-fixed";
+    icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("aria-label", "Toggle theme");
+    icon.title = "Toggle theme";
+    icon.style.cursor = "pointer";
+
+    // Theme toggle function
+    const toggleTheme = () => {
       try {
         const current =
           getLocal("miniframework_theme_v1") ||
@@ -1192,8 +1194,51 @@ window.app = app;
       } catch (err) {
         console.warn("Theme toggle failed", err);
       }
+    };
+
+    // Theme toggle click handler
+    icon.addEventListener("click", (e) => {
+      e.preventDefault();
+      toggleTheme();
     });
-    document.body.appendChild(btn);
+
+    document.body.appendChild(icon);
+
+    // Auto-hide on scroll down for mobile UX ONLY
+    let lastScrollTop = 0;
+    let scrollTimeout = null;
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        // Only apply scroll behavior on mobile (≤ 600px)
+        if (window.innerWidth > 600) return;
+
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+
+        // Clear any pending timeout
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
+
+        // Show icon immediately when scrolling up or at top
+        if (scrollTop < lastScrollTop || scrollTop <= 50) {
+          icon.classList.remove("hidden");
+        } else if (scrollTop > 100) {
+          // Hide icon when scrolling down and past header
+          icon.classList.add("hidden");
+        }
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+
+        // Always show icon again after 2 seconds of no scrolling
+        scrollTimeout = setTimeout(() => {
+          icon.classList.remove("hidden");
+        }, 2000);
+      },
+      { passive: true }
+    );
   } catch (err) {
     console.warn("Failed to create theme toggle button", err);
   }
