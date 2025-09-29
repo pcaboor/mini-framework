@@ -53,6 +53,22 @@ class TodoApp extends Component {
     if (this.framework.getState("editingText") === undefined) {
       this.framework.setWState("editingText", "");
     }
+    // If the app was loaded with a filter path (#/active or #/completed),
+    // initialize the filter state accordingly so the URL reflects the view.
+    try {
+      const currentPath =
+        typeof this.framework.getCurrentPath === "function"
+          ? this.framework.getCurrentPath()
+          : (window.location.hash || "").slice(1).replace(/^\/?/, "/");
+
+      if (currentPath === "/active") {
+        this.framework.setWState("filter", "active");
+      } else if (currentPath === "/completed") {
+        this.framework.setWState("filter", "completed");
+      }
+    } catch (e) {
+      // ignore - keep default filter
+    }
   }
 
   /** Persist todos into localStorage (silent) */
@@ -292,7 +308,8 @@ class TodoApp extends Component {
               class: filter === "active" ? "selected" : "",
               onClick: (e) => {
                 e.preventDefault();
-                this.framework.setState("filter", "active");
+                // Navigate so the hash reflects the current filter (deep-linkable)
+                this.framework.navigateTo("/active");
               },
             },
             ["Active"]
@@ -306,7 +323,7 @@ class TodoApp extends Component {
               class: filter === "completed" ? "selected" : "",
               onClick: (e) => {
                 e.preventDefault();
-                this.framework.setState("filter", "completed");
+                this.framework.navigateTo("/completed");
               },
             },
             ["Completed"]
@@ -352,6 +369,9 @@ class TodoApp extends Component {
 // Initialize the TodoMVC app
 const app = new Framework();
 app.route("/", TodoApp);
+// Register filter routes so deep-links like #/active and #/completed work
+app.route("/active", TodoApp);
+app.route("/completed", TodoApp);
 app.start();
 
 // Make available globally for debugging

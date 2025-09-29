@@ -601,6 +601,22 @@ class TodoDemoComponent extends Component {
     if (this.framework.getState("filter") === undefined) {
       this.framework.setWState("filter", "all");
     }
+    // If loaded directly with a filter path like #/todo/active or #/todo/completed,
+    // initialize the filter state so deep-links work for the demo route.
+    try {
+      const currentPath =
+        typeof this.framework.getCurrentPath === "function"
+          ? this.framework.getCurrentPath()
+          : (window.location.hash || "").slice(1) || "/";
+
+      if (currentPath.endsWith("/active")) {
+        this.framework.setWState("filter", "active");
+      } else if (currentPath.endsWith("/completed")) {
+        this.framework.setWState("filter", "completed");
+      }
+    } catch (e) {
+      // ignore
+    }
   }
 
   /** Persist todos list into storage */
@@ -800,26 +816,43 @@ class TodoDemoComponent extends Component {
               "display: flex; justify-content: center; gap: 10px; margin-bottom: 30px;",
           },
           [
-            ["all", "All"],
-            ["active", "Active"],
-            ["completed", "Completed"],
-          ].map(([filterKey, label]) =>
+            ["all", "All", "/todo"],
+            ["active", "Active", "/todo/active"],
+            ["completed", "Completed", "/todo/completed"],
+          ].map(([filterKey, label, path]) =>
             this.framework.createVElement(
               "button",
               {
                 class: "modern-btn",
                 style: filter === filterKey ? "opacity: 1;" : "opacity: 0.6;",
-                onClick: () => this.framework.setState("filter", filterKey),
+                onClick: (e) => {
+                  e && e.preventDefault && e.preventDefault();
+                  // navigate so URL hash reflects current filter
+                  this.framework.navigateTo(path);
+                },
               },
               [label]
             )
           )
         ),
 
-        this.framework.createVElement(
-          "div",
-          {},
-          filteredTodos.map((todo) =>
+        this.framework.createVElement("div", {}, [
+          // Clear completed button shown only when there are completed tasks
+          completedCount > 0
+            ? this.framework.createVElement(
+                "button",
+                {
+                  class: "clear-completed",
+                  onClick: () =>
+                    this.updateTodos(todos.filter((t) => !t.completed)),
+                  style: "margin-bottom: 12px;",
+                },
+                ["Clear completed"]
+              )
+            : this.framework.createVElement("span", {}),
+
+          // Todo list (spread the mapped array into the parent array)
+          ...filteredTodos.map((todo) =>
             this.framework.createVElement(
               "div",
               { class: `todo-item ${todo.completed ? "completed" : ""}` },
@@ -868,8 +901,8 @@ class TodoDemoComponent extends Component {
                 ),
               ]
             )
-          )
-        ),
+          ),
+        ]),
       ]),
     ]);
   }
@@ -1151,6 +1184,8 @@ app.route("/", HomeComponent);
 app.route("/counter", CounterComponent);
 app.route("/form", FormComponent);
 app.route("/todo", TodoDemoComponent);
+app.route("/todo/active", TodoDemoComponent);
+app.route("/todo/completed", TodoDemoComponent);
 app.route("/dashboard", DashboardComponent);
 
 // Initialize theme from storage or system preference
