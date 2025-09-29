@@ -15,6 +15,9 @@ export class Framework {
     this.state = state;
     this.Refs = {};
     this.Event = [];
+    // Expose helper creator on the framework instance so components can call
+    // this.framework.createVElement(...) (components expect this API).
+    this.createVElement = createVElement;
     this.lastPath = undefined;
     this.initBrowserNavigation();
   }
