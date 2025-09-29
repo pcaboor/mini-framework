@@ -722,6 +722,19 @@ textarea:focus {
   margin-bottom: 30px;
 }
 
+/* Active filter button styling: match modern buttons and use variables */
+.filter-active {
+  opacity: 1 !important;
+  background: var(--success-gradient);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+.filter-active:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--focus-ring-rgba);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   #app {

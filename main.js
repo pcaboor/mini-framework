@@ -823,11 +823,14 @@ class TodoDemoComponent extends Component {
             this.framework.createVElement(
               "button",
               {
-                class: "modern-btn",
-                style: filter === filterKey ? "opacity: 1;" : "opacity: 0.6;",
+                class: `modern-btn ${filter === filterKey ? "filter-active" : ""}`,
+                "aria-pressed": filter === filterKey,
+                title: label,
                 onClick: (e) => {
                   e && e.preventDefault && e.preventDefault();
-                  // navigate so URL hash reflects current filter
+                  // update filter state immediately so UI updates without waiting
+                  this.framework.setState("filter", filterKey);
+                  // navigate so URL hash reflects current filter (deep-linking)
                   this.framework.navigateTo(path);
                 },
               },
@@ -842,12 +845,23 @@ class TodoDemoComponent extends Component {
             ? this.framework.createVElement(
                 "button",
                 {
-                  class: "clear-completed",
+                  class: "modern-btn button-success",
                   onClick: () =>
                     this.updateTodos(todos.filter((t) => !t.completed)),
+                  "aria-label": "Clear completed tasks",
+                  title: "Clear completed tasks",
                   style: "margin-bottom: 12px;",
                 },
-                ["Clear completed"]
+                [
+                  this.framework.createVElement("i", {
+                    class: "fas fa-broom",
+                  }),
+                  this.framework.createVElement(
+                    "span",
+                    { class: "label-text" },
+                    [" Clear completed"]
+                  ),
+                ]
               )
             : this.framework.createVElement("span", {}),
 
